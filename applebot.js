@@ -14,14 +14,23 @@ let trading_cards = JSON.parse(fs.readFileSync("gacha_decks/cards.json", "utf-8"
 let tarot_cards = JSON.parse(fs.readFileSync("gacha_decks/tavernarcana.json", "utf-8"));
 let weights = [1,1,1,1,1,2,2,2,2,2,2,3,3,3,3,3,3,4,4,5];
 
-// Sets for users on cooldown for drawing from these decks
+// Set for user on cooldown for drawing from basic deck
 const recently_drawn = new Set();
-const recently_drawn_tarot = new Set();
+// Holds counts for users drawing from tarot. Max 3 draws per cooldown.
+const recently_drawn_tarot = {};
 
 // Startup
 discord_client.once("ready", () => {
 	console.log("<> Apple Activated <>");
 });
+
+// Set env vars from local config if not in production
+if (process.env.NODE_ENV !== "production") {
+	console.log("Development Mode");
+	const {dbstr, disckey} = require("./config.json");
+	process.env.DB_CONNECTION_STRING = dbstr;
+	process.env.DISCORD_KEY = disckey;
+}
 
 // Catch each message and check it...
 discord_client.on("message", message => {
@@ -65,7 +74,7 @@ discord_client.on("message", message => {
 			if (message.content.length < 10) return;
 			let member = message.mentions.members.first().user;
 			recently_drawn.delete(member.id);
-			recently_drawn_tarot.delete(member.id);
+			recently_drawn_tarot[member.id] = 0;
 			message.channel.send("Draw timer reset for "+member.username+".");
 		}
 	}
@@ -169,9 +178,10 @@ discord_client.on("message", message => {
 		// Draw card from tavern tarot and add to sender's collection
 		case `${prefix}drawtarot`:
 		case `${prefix}dt`:
-			if (!recently_drawn_tarot.has(message.author.id)) {
+			let author = message.author.id;
+			if (!recently_drawn_tarot[author] || recently_drawn_tarot[author] < 3) {
 				// Only select a card if it has a image to display
-				let c = {};
+				let c;
 				do {
 					c = tarot_cards[Math.floor(Math.random() * tarot_cards.length)];
 				} while (c["imglink"] == "");
@@ -185,14 +195,20 @@ discord_client.on("message", message => {
 					.setFooter("Tavern Arcana")
 				);
 	
+				if (!recently_drawn_tarot[author]) {
+					recently_drawn_tarot[author] = 1;
+				}
+				else {
+					recently_drawn_tarot[author]++;
+				}
+				
 				// User cannot draw from a deck again for some time
-				recently_drawn_tarot.add(message.author.id);
-				setTimeout(function(){
-					recently_drawn_tarot.delete(message.author.id);
+				setTimeout(function() {
+					recently_drawn_tarot[author] = 0;
 				}, 60000);
 			}
 			else {
-				message.channel.send("You must wait some time before drawing again.");
+				message.channel.send("You must wait some time before drawing again. Up to three draws per cooldown.");
 			}
 			break;
 	}

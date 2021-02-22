@@ -1,46 +1,178 @@
 [
-	{"id":0, "numeral":"0", "name":"The Fool", "emoji":":clown:", "imglink":"", 
-		"description":"The Fool advises that your lighten up and be spontaneous beyond logic."},
-	{"id":1, "numeral":"I", "name":"The Magician", "emoji":":mage:", "imglink":"https://media.discordapp.net/attachments/775925249731723264/775928369904615434/tt_magician.png?width=271&height=541", 
-		"description":"Have faith in your own creativity and intuition, be open-minded and curious."},
-	{"id":2, "numeral":"II", "name":"The High Priestess", "emoji":":butterfly:", "imglink":"", 
-		"description":"You must cooperate with your inner spirit more in order to remove distractions."},
-	{"id":3, "numeral":"III", "name":"The Empress", "emoji":":angel:", "imglink":"", 
-		"description":"Trust in the good sense you have shown thus far, be caring and thoughtful."},
-	{"id":4, "numeral":"IV", "name":"The Emperor", "emoji":":crown:", "imglink":"https://media.discordapp.net/attachments/775925249731723264/775966230129016832/tt_emperor.png?width=271&height=541", 
-		"description":"Reach within you to find natural leadership and self-control."},
-	{"id":5, "numeral":"V", "name":"The Hierophant", "emoji":":ringed_planet:", "imglink":"https://media.discordapp.net/attachments/775925249731723264/775928217478496276/tt_hierophant.png?width=271&height=541", 
-		"description":"Return to your studies! Broaden your experiences and educate yourself."},
-	{"id":6, "numeral":"VI", "name":"The Lovers", "emoji":":two_hearts:", "imglink":"", 
-		"description":"Careful consideration in the long-term is necessary. Potential compromises."},
-	{"id":7, "numeral":"VII", "name":"The Chariot", "emoji":":rocket:", "imglink":"", 
-		"description":"Prepare for travel, taste the joy of freedom, and be receptive to people."},
-	{"id":8, "numeral":"VIII", "name":"Strength", "emoji":":muscle:", "imglink":"https://media.discordapp.net/attachments/775925249731723264/775928445125132308/tt_strength.png?width=271&height=541", 
-		"description":"Assertively discipline yourself, separate your ego, set an example!"},
-	{"id":9, "numeral":"IX", "name":"The Hermit", "emoji":":moyai:", "imglink":"https://media.discordapp.net/attachments/775925249731723264/775928164131667968/tt_hermit.png?width=271&height=541", 
-		"description":"Think carefully in seclusion, tell everyone to leave you alone until you are ready."},
-	{"id":10, "numeral":"X", "name":"Wheel of Fortune", "emoji":":game_die:", "imglink":"https://media.discordapp.net/attachments/775925249731723264/775928619951325194/tt_wheel_of_fortune.png?width=271&height=541", 
-		"description":"Follow and accept the flow of dramatically changing patterns - you are safe here."},
-	{"id":11, "numeral":"XI", "name":"Justice", "emoji":":comet:", "imglink":"https://media.discordapp.net/attachments/775925249731723264/775928326677987338/tt_justice.png?width=271&height=541", 
-		"description":"Observe other perspectives, subtle inferencing will yield wise assessments."},
-	{"id":12, "numeral":"XII", "name":"The Hanged Man", "emoji":":chains:", "imglink":"https://media.discordapp.net/attachments/775925249731723264/775928098494480384/tt_hanged_man.png?width=271&height=541", 
-		"description":"Surrender illusions of control, sometimes bad things happen to good people."},
-	{"id":13, "numeral":"XIII", "name":"Death", "emoji":":skull:", "imglink":"https://media.discordapp.net/attachments/775925249731723264/775927998783946812/tt_death.png?width=271&height=541", 
-		"description":"Time to move on, detach from the old ways in favour of your ultimate interests."},
-	{"id":14, "numeral":"XIV", "name":"Temperance", "emoji":":leaves:", "imglink":"https://media.discordapp.net/attachments/775925249731723264/775928543691145236/tt_temperance.png?width=271&height=541", 
-		"description":"Identify and seek that which is missing in your life, be organized and disciplined."},
-	{"id":15, "numeral":"XV", "name":"The Devil", "emoji":":japanese_goblin:", "imglink":"https://media.discordapp.net/attachments/775925249731723264/775928057352421376/tt_devil.png?width=271&height=541", 
-		"description":"Express your emotions and acknowledge your feelings to remain true to yourself."},
-	{"id":16, "numeral":"XVI", "name":"The Tower", "emoji":":zap:", "imglink":"https://media.discordapp.net/attachments/775925249731723264/775928581352063006/tt_tower.png?width=271&height=541", 
-		"description":"You are an agent of change, but do not leave yourself vulnerable as you plunge into the future."},
-	{"id":17, "numeral":"XVII", "name":"The Star", "emoji":":star:", "imglink":"", 
-		"description":"Connect to your higher self, quietly contemplate and listen for the voice within."},
-	{"id":18, "numeral":"XVIII", "name":"The Moon", "emoji":":crescent_moon:", "imglink":"https://media.discordapp.net/attachments/775925249731723264/775928405513207818/tt_moon.png?width=271&height=541", 
-		"description":"Trust your bodily instincts, meditate, be a witness and do nothing."},
-	{"id":19, "numeral":"XIX", "name":"The Sun", "emoji":":sun_with_face:", "imglink":"https://media.discordapp.net/attachments/775925249731723264/775928494319206450/tt_sun.png?width=271&height=541", 
-		"description":"Have confidence in your natural divinity, focus on the real positives and be a light for others."},
-	{"id":20, "numeral":"XX", "name":"Judgement", "emoji":":dragon:", "imglink":"https://media.discordapp.net/attachments/775925249731723264/775928261992513566/tt_judgement.png?width=271&height=541", 
-		"description":"Release your hidden potential, divest from fruitless endeavours and trust your impulses."},
-	{"id":21, "numeral":"XXI", "name":"The World", "emoji":":earth_americas:", "imglink":"https://media.discordapp.net/attachments/775925249731723264/775928665052807168/tt_world.png?width=271&height=541", 
-		"description":"Do whatever you want! You cannot err so keep moving forward! Do not allow your ego to inflate."}
+	{
+		"id":0, 
+		"numeral":"0", 
+		"name":"The Fool", 
+		"emoji":":zany_face:", 
+		"imglink":"https://media.discordapp.net/attachments/775925249731723264/813283152042786866/tt_fool.png?width=287&height=573", 
+		"description":"The Fool advises that you lighten up and be spontaneous beyond logic."
+	},
+	{
+		"id":1, 
+		"numeral":"I", 
+		"name":"The Magician", 
+		"emoji":":mage:", 
+		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928369904615434/tt_magician.png?width=271&height=541", 
+		"description":"Have faith in your own creativity and intuition, be open-minded and curious."
+	},
+	{
+		"id":2, 
+		"numeral":"II", 
+		"name":"The High Priestess", 
+		"emoji":":butterfly:", 
+		"imglink":"", 
+		"description":"You must cooperate with your inner spirit more in order to remove distractions."
+	},
+	{
+		"id":3, 
+		"numeral":"III", 
+		"name":"The Empress", 
+		"emoji":":angel:", 
+		"imglink":"", 
+		"description":"Trust in the good sense you have shown thus far, be caring and thoughtful."
+	},
+	{
+		"id":4, 
+		"numeral":"IV", 
+		"name":"The Emperor", 
+		"emoji":":crown:", 
+		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775966230129016832/tt_emperor.png?width=271&height=541", 
+		"description":"Reach within you to find natural leadership and self-control."
+	},
+	{
+		"id":5, 
+		"numeral":"V", 
+		"name":"The Hierophant", 
+		"emoji":":ringed_planet:", 
+		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928217478496276/tt_hierophant.png?width=271&height=541", 
+		"description":"Return to your studies! Broaden your experiences and educate yourself."
+	},
+	{
+		"id":6, 
+		"numeral":"VI", 
+		"name":"The Lovers", 
+		"emoji":":two_hearts:", 
+		"imglink":"", 
+		"description":"Careful consideration in the long-term is necessary. Potential compromises."
+	},
+	{
+		"id":7, 
+		"numeral":"VII", 
+		"name":"The Chariot", 
+		"emoji":":rocket:", 
+		"imglink":"", 
+		"description":"Prepare for travel, taste the joy of freedom, and be receptive to people."
+	},
+	{
+		"id":8, 
+		"numeral":"VIII", 
+		"name":"Strength", 
+		"emoji":":muscle:", 
+		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928445125132308/tt_strength.png?width=271&height=541", 
+		"description":"Assertively discipline yourself, separate your ego, set an example!"
+	},
+	{
+		"id":9, 
+		"numeral":"IX", 
+		"name":"The Hermit", 
+		"emoji":":moyai:", 
+		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928164131667968/tt_hermit.png?width=271&height=541", 
+		"description":"Think carefully in seclusion, tell everyone to leave you alone until you are ready."
+	},
+	{
+		"id":10, 
+		"numeral":"X", 
+		"name":"Wheel of Fortune", 
+		"emoji":":game_die:", 
+		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928619951325194/tt_wheel_of_fortune.png?width=271&height=541", 
+		"description":"Follow and accept the flow of dramatically changing patterns - you are safe here."
+	},
+	{
+		"id":11, 
+		"numeral":"XI", 
+		"name":"Justice", 
+		"emoji":":comet:", 
+		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928326677987338/tt_justice.png?width=271&height=541", 
+		"description":"Observe other perspectives, subtle inferencing will yield wise assessments."
+	},
+	{
+		"id":12, 
+		"numeral":"XII", 
+		"name":"The Hanged Man", 
+		"emoji":":chains:", 
+		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928098494480384/tt_hanged_man.png?width=271&height=541", 
+		"description":"Surrender illusions of control, sometimes bad things happen to good people."
+	},
+	{
+		"id":13, 
+		"numeral":"XIII", 
+		"name":"Death", 
+		"emoji":":skull:", 
+		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775927998783946812/tt_death.png?width=271&height=541", 
+		"description":"Time to move on, detach from the old ways in favour of your ultimate interests."
+	},
+	{
+		"id":14, 
+		"numeral":"XIV", 
+		"name":"Temperance", 
+		"emoji":":leaves:", 
+		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928543691145236/tt_temperance.png?width=271&height=541", 
+		"description":"Identify and seek that which is missing in your life, be organized and disciplined."
+	},
+	{
+		"id":15, 
+		"numeral":"XV", 
+		"name":"The Devil", 
+		"emoji":":japanese_goblin:", 
+		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928057352421376/tt_devil.png?width=271&height=541", 
+		"description":"Express your emotions and acknowledge your feelings to remain true to yourself."
+	},
+	{
+		"id":16, 
+		"numeral":"XVI", 
+		"name":"The Tower", 
+		"emoji":":zap:", 
+		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928581352063006/tt_tower.png?width=271&height=541", 
+		"description":"You are an agent of change, but do not leave yourself vulnerable as you plunge into the future."
+	},
+	{
+		"id":17, 
+		"numeral":"XVII", 
+		"name":"The Star", 
+		"emoji":":star:", 
+		"imglink":"", 
+		"description":"Connect to your higher self, quietly contemplate and listen for the voice within."
+	},
+	{
+		"id":18, 
+		"numeral":"XVIII", 
+		"name":"The Moon", 
+		"emoji":":crescent_moon:", 
+		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928405513207818/tt_moon.png?width=271&height=541", 
+		"description":"Trust your bodily instincts, meditate, be a witness and do nothing."
+	},
+	{
+		"id":19, 
+		"numeral":"XIX", 
+		"name":"The Sun", 
+		"emoji":":sun_with_face:", 
+		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928494319206450/tt_sun.png?width=271&height=541", 
+		"description":"Have confidence in your natural divinity, focus on the real positives and be a light for others."
+	},
+	{
+		"id":20, 
+		"numeral":"XX", 
+		"name":"Judgement", 
+		"emoji":":dragon:", 
+		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928261992513566/tt_judgement.png?width=271&height=541", 
+		"description":"Release your hidden potential, divest from fruitless endeavours and trust your impulses."
+	},
+	{
+		"id":21, 
+		"numeral":"XXI", 
+		"name":"The World", 
+		"emoji":":earth_americas:", 
+		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928665052807168/tt_world.png?width=271&height=541", 
+		"description":"Do whatever you want! You cannot err so keep moving forward! Do not allow your ego to inflate."
+	}
 ]
