@@ -12,12 +12,17 @@ const mdb_collection = "user_collections";
 let fs = require("fs");
 let trading_cards = JSON.parse(fs.readFileSync("gacha_decks/cards.json", "utf-8"));
 let tarot_cards = JSON.parse(fs.readFileSync("gacha_decks/tavernarcana.json", "utf-8"));
-let weights = [1,1,1,1,1,2,2,2,2,2,2,3,3,3,3,3,3,4,4,5];
+let weights = [
+	1,1,
+	2,2,2,
+	3,3,3,3,3,
+	4,4,4,4,4,
+	5,5,5,5,5
+];
 
-// Set for user on cooldown for drawing from basic deck
+// Sets for user on cooldown for drawing from decks
 const recently_drawn = new Set();
-// Holds counts for users drawing from tarot. Max 3 draws per cooldown.
-const recently_drawn_tarot = {};
+const recently_drawn_tarot = new Set();
 
 // Startup
 discord_client.once("ready", () => {
@@ -44,7 +49,7 @@ discord_client.on("message", message => {
 			let member = message.mentions.members.first();
 			member.kick().then((member) => {
 				message.channel.send(member.displayName+" got the boot!"+" :boot:")
-			})
+			});
 		}
 		// Ban member
 		if (message.content.startsWith(`${prefix}ban`)) {
@@ -52,7 +57,7 @@ discord_client.on("message", message => {
 			let member = message.mentions.members.first();
 			member.ban().then((member) => {
 				message.channel.send(member.displayName+" got MC Hammer'd!"+" :hammer:")
-			})
+			});
 		}
 		// Purge last <int> messages, up to 50
 		if (message.content.startsWith(`${prefix}purge`)) {
@@ -61,7 +66,7 @@ discord_client.on("message", message => {
 				amount += message.content.charAt(i);
 			}
 			let targets = Number(amount);
-			if ( targets > 0 && targets < 51) {
+			if (targets > 0 && targets < 51) {
 				message.channel.bulkDelete(targets + 1);
 				message.channel.send(targets+" message(s) successfully deleted.");
 			}
@@ -166,7 +171,7 @@ discord_client.on("message", message => {
 	
 				// User cannot draw from a deck again for some time
 				recently_drawn.add(message.author.id);
-				setTimeout(function(){
+				setTimeout(function() {
 					recently_drawn.delete(message.author.id);
 				}, 600000);
 			}
@@ -178,37 +183,50 @@ discord_client.on("message", message => {
 		// Draw card from tavern tarot and add to sender's collection
 		case `${prefix}drawtarot`:
 		case `${prefix}dt`:
-			let author = message.author.id;
-			if (!recently_drawn_tarot[author] || recently_drawn_tarot[author] < 3) {
+			if (!recently_drawn_tarot.has(message.author.id)) {
 				// Only select a card if it has a image to display
-				let c;
-				do {
-					c = tarot_cards[Math.floor(Math.random() * tarot_cards.length)];
-				} while (c["imglink"] == "");
+				let cards = [];
+				// Get three unique cards
+				//  - first one is primary
+				//  - second is its reverse, or warning
+				//  - third is some more advice
+				while (cards.length < 3) {
+					let c;
+					do {
+						c = tarot_cards[Math.floor(Math.random() * tarot_cards.length)];
+					} while (c["imglink"] == "" || cards.includes(c));
+					cards.push(c);
+				}
 
 				message.channel.send(
 					new Discord.MessageEmbed()
-					.setTitle(c["numeral"] + " : " + c["name"] + " " + c["emoji"])
-					.setDescription(c["description"])
-					.setImage(c["imglink"])
+					.setTitle(cards[0]["numeral"] + " : " + cards[0]["name"] + " " + cards[0]["emoji"])
+					.setDescription(cards[0]["description"])
+					.addFields(
+						{ 
+							name: cards[1]["name"] + " " + cards[1]["emoji"], 
+							value: cards[1]["reverse"] + "...", 
+							inline: true 
+						},
+						{ 
+							name: cards[2]["name"] + " " + cards[2]["emoji"], 
+							value: "..." + cards[2]["advice"], 
+							inline: true 
+						}
+					)
+					.setImage(cards[0]["imglink"])
 					.setColor("DARK_RED")
 					.setFooter("Tavern Arcana")
 				);
-	
-				if (!recently_drawn_tarot[author]) {
-					recently_drawn_tarot[author] = 1;
-				}
-				else {
-					recently_drawn_tarot[author]++;
-				}
 				
 				// User cannot draw from a deck again for some time
+				recently_drawn_tarot.add(message.author.id);
 				setTimeout(function() {
-					recently_drawn_tarot[author] = 0;
-				}, 60000);
+					recently_drawn_tarot.delete(message.author.id);
+				}, 150000);
 			}
 			else {
-				message.channel.send("You must wait some time before drawing again. Up to three draws per cooldown.");
+				message.channel.send("You must wait some time before drawing again.");
 			}
 			break;
 	}
