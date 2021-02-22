@@ -34,7 +34,6 @@ npm start
 
 ```js
 hi apple        		// says hi back
-$gif <query>    		// search Giphy.com for a gif, returns a random one from all results
 $drawaugust or $da		// draw a card from the August Trading Cards collection
 $mycollection or $ma  		// display the message author's card collection
 $drawtarot or $dt		// draw a card from the Tavern Arcana
