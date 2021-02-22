@@ -1,0 +1,18 @@
+{
+  "name": "apple",
+  "version": "1.2.0",
+  "description": "Multifunction discord bot.",
+  "main": "applebot.js",
+  "scripts": {
+    "start": "node applebot.js"
+  },
+  "author": "oscarsandford",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^12.4.1",
+    "dotenv": "^8.2.0",
+    "mongodb": "^3.6.3",
+    "node": "^15.0.1",
+    "nodemon": "^2.0.6"
+  }
+}

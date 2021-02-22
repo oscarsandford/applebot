@@ -1,0 +1,7 @@
+.env
+.vs
+node_modules
+# Don't need true config file
+config.json
+# Some deprecated code left untracked
+oldsrc.txt
