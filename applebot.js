@@ -14,10 +14,10 @@ let trading_cards = JSON.parse(fs.readFileSync("gacha_decks/cards.json", "utf-8"
 let tarot_cards = JSON.parse(fs.readFileSync("gacha_decks/tavernarcana.json", "utf-8"));
 let weights = [
 	1,1,
-	2,2,2,
+	2,2,2,2,
 	3,3,3,3,3,
 	4,4,4,4,4,
-	5,5,5,5,5
+	5,5,5,5
 ];
 
 // Sets for user on cooldown for drawing from decks
@@ -79,7 +79,7 @@ discord_client.on("message", message => {
 			if (message.content.length < 10) return;
 			let member = message.mentions.members.first().user;
 			recently_drawn.delete(member.id);
-			recently_drawn_tarot[member.id] = 0;
+			recently_drawn_tarot.delete(member.id);
 			message.channel.send("Draw timer reset for "+member.username+".");
 		}
 	}
@@ -123,7 +123,18 @@ discord_client.on("message", message => {
 					.setTitle(message.author.username + "'s Collection")
 					.setColor("DARK_GOLD");
 				
-				items.sort((a, b) => (a > b) ? 1 : -1);
+				// items.sort((a, b) => (a > b) ? 1 : -1);
+				
+				let i, j;
+				for (i = 0; i < items.length; i++) {
+					for (j = i+1; j < items.length; j++) {
+						if (items[j]["card"]["rank"] > items[i]["card"]["rank"]) {
+							[items[i], items[j]] = [items[j], items[i]];
+						}
+					}
+				}
+				console.log(items);
+
 				let count = 0;
 
 				items.forEach(el => {
@@ -171,7 +182,7 @@ discord_client.on("message", message => {
 	
 				// User cannot draw from a deck again for some time
 				recently_drawn.add(message.author.id);
-				setTimeout(function() {
+				setTimeout(() => {
 					recently_drawn.delete(message.author.id);
 				}, 600000);
 			}
@@ -221,7 +232,7 @@ discord_client.on("message", message => {
 				
 				// User cannot draw from a deck again for some time
 				recently_drawn_tarot.add(message.author.id);
-				setTimeout(function() {
+				setTimeout(() => {
 					recently_drawn_tarot.delete(message.author.id);
 				}, 150000);
 			}
