@@ -17,12 +17,12 @@ A multi-function NodeJS bot for the Discord application.
 This project requires NodeJS and NPM to be installed, as well as various dependencies. <br>
 Clone the repository and install the dependencies with:
 ```sh
-git clone https://github.com/oscarsandford/Apple-the-Discord-Bot.git
+git clone https://github.com/oscarsandford/Applebot.git
 cd Applebot
 npm install
 ```
 
-Requires API keys for Discord, Giphy, and MongoDB. Add them as environment variables as needed. 
+Requires API keys for Discord and MongoDB. Add them as environment variables as needed. 
 Run the app in a development environment with:
 ```sh
 npm start
@@ -37,6 +37,7 @@ hi apple        		// says hi back
 $drawaugust or $da		// draw a card from the August Trading Cards collection
 $mycollection or $ma  		// display the message author's card collection
 $drawtarot or $dt		// draw a card from the Tavern Arcana
+$describecard <cname>	// returns a preview of the card with cname, if it exists
 $resetmc     			// reset the card collection of the user that called it
 ```
 
