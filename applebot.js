@@ -123,8 +123,7 @@ discord_client.on("message", message => {
 					.setTitle(message.author.username + "'s Collection")
 					.setColor("DARK_GOLD");
 				
-				// items.sort((a, b) => (a > b) ? 1 : -1);
-				
+				// Select sort displayed cards in desc order
 				let i, j;
 				for (i = 0; i < items.length; i++) {
 					for (j = i+1; j < items.length; j++) {
@@ -133,10 +132,8 @@ discord_client.on("message", message => {
 						}
 					}
 				}
-				console.log(items);
 
 				let count = 0;
-
 				items.forEach(el => {
 					let n = el["card"]["name"] +" +"+ el["card"]["level"];
 					let v = ":star:".repeat(el["card"]["rank"]);
@@ -234,7 +231,7 @@ discord_client.on("message", message => {
 				recently_drawn_tarot.add(message.author.id);
 				setTimeout(() => {
 					recently_drawn_tarot.delete(message.author.id);
-				}, 150000);
+				}, 14400000);
 			}
 			else {
 				message.channel.send("You must wait some time before drawing again.");
