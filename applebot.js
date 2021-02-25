@@ -137,8 +137,8 @@ discord_client.on("message", message => {
 		}
 	}
 
-	// Switch on message EXACT contents
-	switch (message.content) {
+	// Match exact, case-insensitive message contents
+	switch (message.content.toLowerCase()) {
 		case "hi apple":
 			message.channel.send("Good day, "+message.author.username+"! :apple:");
 			break;
@@ -237,6 +237,11 @@ discord_client.on("message", message => {
 						c = tarot_cards[Math.floor(Math.random() * tarot_cards.length)];
 					} while (c["imglink"] == "" || cards.includes(c));
 					cards.push(c);
+				}
+
+				// For lucky main draws on The World. Yes, this is a JoJo reference!
+				if (card[0]["id"] === 21) {
+					card[0]["description"] = "I, "+ message.author.username+", have a dream!";
 				}
 
 				message.channel.send(
