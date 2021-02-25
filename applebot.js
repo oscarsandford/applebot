@@ -104,6 +104,39 @@ discord_client.on("message", message => {
 		message.channel.send("Collection reset for "+member.username+".");
 	}
 
+	// Describe a specific card given by an argument to this command
+	if (message.content.startsWith(`${prefix}describecard`)) {
+		if (message.content.length < 15) return;
+		let arg = message.content.slice(14, message.content.length).toLowerCase();
+		// Check both card collections for a matching name
+		let tarot_result = tarot_cards.find((c) => c["name"].toLowerCase() == arg);
+		let trading_result = trading_cards.find((c) => c["name"].toLowerCase() == arg);
+		
+		if (tarot_result) {
+			message.channel.send(
+				new Discord.MessageEmbed()
+				.setTitle(tarot_result["numeral"] + " : " + tarot_result["name"] + " " + tarot_result["emoji"])
+				.setDescription(tarot_result["description"])
+				.setImage(tarot_result["imglink"])
+				.setColor("DARK_RED")
+				.setFooter("Tavern Arcana")
+			);
+		}
+		else if (trading_result) {
+			message.channel.send(
+				new Discord.MessageEmbed()
+				.setTitle(trading_result["name"] + " +" + trading_result["level"])
+				.setDescription(":star:".repeat(trading_result["rank"]))
+				.setImage(trading_result["imglink"])
+				.setColor("DARK_GREEN")
+				.setFooter("August Trading Cards")
+			);
+		}
+		else {
+			message.channel.send("Can't find that card in any deck.");
+		}
+	}
+
 	// Switch on message EXACT contents
 	switch (message.content) {
 		case "hi apple":
