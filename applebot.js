@@ -240,8 +240,8 @@ discord_client.on("message", message => {
 				}
 
 				// For lucky main draws on The World. Yes, this is a JoJo reference!
-				if (card[0]["id"] === 21) {
-					card[0]["description"] = "I, "+ message.author.username+", have a dream!";
+				if (cards[0]["id"] === 21) {
+					cards[0]["description"] = "I, "+ message.author.username+", have a dream!";
 				}
 
 				message.channel.send(
