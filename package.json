@@ -1,10 +1,10 @@
 {
   "name": "apple",
-  "version": "1.2.0",
+  "version": "1.4.0",
   "description": "Multifunction discord bot.",
   "main": "applebot.js",
   "scripts": {
-    "start": "node applebot.js"
+    "start": "node src/applebot.js"
   },
   "author": "oscarsandford",
   "license": "MIT",

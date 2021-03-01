@@ -7,7 +7,8 @@
 		"imglink":"https://media.discordapp.net/attachments/775925249731723264/813283152042786866/tt_fool.png?width=287&height=573", 
 		"description":"Lighten up and be spontaneous beyond logic.",
 		"reverse":"You feel caught by dogma",
-		"advice":"but be happy in the moment."
+		"advice":"but be happy in the moment.",
+		"deck":"tarot_cards"
 	},
 	{
 		"id":1, 
@@ -17,7 +18,8 @@
 		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928369904615434/tt_magician.png?width=271&height=541", 
 		"description":"Have faith in your own creativity and intuition.",
 		"reverse":"You work against your creativity",
-		"advice":"but have the courage to speak your truth."
+		"advice":"but have the courage to speak your truth.",
+		"deck":"tarot_cards"
 	},
 	{
 		"id":2, 
@@ -27,7 +29,8 @@
 		"imglink":"", 
 		"description":"You must cooperate with your inner spirit in order to remove distractions.",
 		"reverse":"Your problems relate to addiction",
-		"advice":"but spiritual practice will guide you."
+		"advice":"but spiritual practice will guide you.",
+		"deck":"tarot_cards"
 	},
 	{
 		"id":3, 
@@ -37,7 +40,8 @@
 		"imglink":"", 
 		"description":"Trust in your caring and thoughtful nature.",
 		"reverse":"Set limits on your punitiveness",
-		"advice":"but trust in your good intentions."
+		"advice":"but trust in your good intentions.",
+		"deck":"tarot_cards"
 	},
 	{
 		"id":4, 
@@ -45,9 +49,10 @@
 		"name":"The Emperor", 
 		"emoji":":crown:", 
 		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775966230129016832/tt_emperor.png?width=271&height=541", 
-		"description":"Reinforce sovereignty and achknowledge your potential.",
+		"description":"Reinforce sovereignty and acknowledge your potential.",
 		"reverse":"Arrogance blinds you",
-		"advice":"and so you must seek self-control."
+		"advice":"and so you must seek self-control.",
+		"deck":"tarot_cards"
 	},
 	{
 		"id":5, 
@@ -57,7 +62,8 @@
 		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928217478496276/tt_hierophant.png?width=271&height=541", 
 		"description":"Broaden your experiences and educate yourself.",
 		"reverse":"You bite the hand that feeds you",
-		"advice":"but self-educating will earn you respect."
+		"advice":"but self-educating will earn you respect.",
+		"deck":"tarot_cards"
 	},
 	{
 		"id":6, 
@@ -67,7 +73,8 @@
 		"imglink":"", 
 		"description":"Careful consideration in the long-term is necessary.",
 		"reverse":"You feel divided",
-		"advice":"and making a compromise will free you."
+		"advice":"and making a compromise will free you.",
+		"deck":"tarot_cards"
 	},
 	{
 		"id":7, 
@@ -77,7 +84,8 @@
 		"imglink":"", 
 		"description":"Prepare for travel, taste the joy of freedom, and be receptive to people.",
 		"reverse":"You know that you should make change",
-		"advice":"but moving somewhere else will benefit you."
+		"advice":"but moving somewhere else will benefit you.",
+		"deck":"tarot_cards"
 	},
 	{
 		"id":8, 
@@ -87,7 +95,8 @@
 		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928445125132308/tt_strength.png?width=271&height=541", 
 		"description":"Assertively discipline yourself, set an example!",
 		"reverse":"You are an untamed force",
-		"advice":"but you must discipline yourself."
+		"advice":"but you must discipline yourself.",
+		"deck":"tarot_cards"
 	},
 	{
 		"id":9, 
@@ -97,7 +106,8 @@
 		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928164131667968/tt_hermit.png?width=271&height=541", 
 		"description":"Think carefully in seclusion, tell everyone to leave you alone until you are ready.",
 		"reverse":"You resist evolving apart",
-		"advice":"but careful, secluded thought will guide you."
+		"advice":"but careful, secluded thought will guide you.",
+		"deck":"tarot_cards"
 	},
 	{
 		"id":10, 
@@ -107,7 +117,8 @@
 		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928619951325194/tt_wheel_of_fortune.png?width=271&height=541", 
 		"description":"Follow and accept the flow of dramatically changing patterns - you are safe here.",
 		"reverse":"You're back on the rocks",
-		"advice":"but following the flow of events is favourable."
+		"advice":"but following the flow of events is favourable.",
+		"deck":"tarot_cards"
 	},
 	{
 		"id":11, 
@@ -117,7 +128,8 @@
 		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928326677987338/tt_justice.png?width=271&height=541", 
 		"description":"Observe other perspectives, subtle inferencing will yield wise assessments.",
 		"reverse":"You feel uninformed",
-		"advice":"but other's perspectives will guide you."
+		"advice":"but other's perspectives will guide you.",
+		"deck":"tarot_cards"
 	},
 	{
 		"id":12, 
@@ -127,7 +139,8 @@
 		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928098494480384/tt_hanged_man.png?width=271&height=541", 
 		"description":"Surrender illusions of control, sometimes bad things happen to good people.",
 		"reverse":"Your self-sacrifice is useless",
-		"advice":"so you must surrender illusions of control."
+		"advice":"so you must surrender illusions of control.",
+		"deck":"tarot_cards"
 	},
 	{
 		"id":13, 
@@ -137,7 +150,8 @@
 		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775927998783946812/tt_death.png?width=271&height=541", 
 		"description":"Time to move on, detach from the old ways in favour of your ultimate interests.",
 		"reverse":"You wish for death",
-		"advice":"but it's time to move on."
+		"advice":"but it's time to move on.",
+		"deck":"tarot_cards"
 	},
 	{
 		"id":14, 
@@ -147,7 +161,8 @@
 		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928543691145236/tt_temperance.png?width=271&height=541", 
 		"description":"Identify and seek that which is missing in your life, be organized and disciplined.",
 		"reverse":"You want to give up on yourself",
-		"advice":"so consider what is missing in your life."
+		"advice":"so consider what is missing in your life.",
+		"deck":"tarot_cards"
 	},
 	{
 		"id":15, 
@@ -157,7 +172,8 @@
 		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928057352421376/tt_devil.png?width=271&height=541", 
 		"description":"Express your emotions and acknowledge your feelings to remain true to yourself.",
 		"reverse":"You delight random chaos",
-		"advice":"but avoiding subtlety will let you be honest."
+		"advice":"but avoiding subtlety will let you be honest.",
+		"deck":"tarot_cards"
 	},
 	{
 		"id":16, 
@@ -167,7 +183,8 @@
 		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928581352063006/tt_tower.png?width=271&height=541", 
 		"description":"You are an agent of change, but do not leave yourself vulnerable as you plunge into the future.",
 		"reverse":"Your past options have closed",
-		"advice":"so mediate your dive into the future."
+		"advice":"so mediate your dive into the future.",
+		"deck":"tarot_cards"
 	},
 	{
 		"id":17, 
@@ -177,7 +194,8 @@
 		"imglink":"", 
 		"description":"Connect to your higher self, quietly contemplate and listen for the voice within.",
 		"reverse":"You're alienated by your brilliance",
-		"advice":"and so listen to your inner voice."
+		"advice":"and so listen to your inner voice.",
+		"deck":"tarot_cards"
 	},
 	{
 		"id":18, 
@@ -187,7 +205,8 @@
 		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928405513207818/tt_moon.png?width=271&height=541", 
 		"description":"Trust your bodily instincts, meditate, be a witness and do nothing.",
 		"reverse":"You are delusional",
-		"advice":"and so stick to your instincts."
+		"advice":"and so stick to your instincts.",
+		"deck":"tarot_cards"
 	},
 	{
 		"id":19, 
@@ -197,7 +216,8 @@
 		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928494319206450/tt_sun.png?width=271&height=541", 
 		"description":"Have confidence in your natural divinity, focus on the real positives and be a light for others.",
 		"reverse":"Life is great",
-		"advice":"but embracing your natural divinity will let you shine."
+		"advice":"but embracing your natural divinity will let you shine.",
+		"deck":"tarot_cards"
 	},
 	{
 		"id":20, 
@@ -207,7 +227,8 @@
 		"imglink":"https://media.discordapp.net/attachments/775925249731723264/775928261992513566/tt_judgement.png?width=271&height=541", 
 		"description":"Release your hidden potential, divest from fruitless endeavours and trust your impulses.",
 		"reverse":"You feel restricted",
-		"advice":"but you must trust your impulses and hidden potential."
+		"advice":"but you must trust your impulses and hidden potential.",
+		"deck":"tarot_cards"
 	},
 	{
 		"id":21, 
@@ -217,6 +238,7 @@
 		"imglink":"https://media.discordapp.net/attachments/775925249731723264/814622579569852506/tt_world_animated.gif?width=270&height=540", 
 		"description":"Do whatever you want! You cannot err so keep moving forward! Do not allow your ego to inflate.",
 		"reverse":"Life is great",
-		"advice":"but you shall not err, dance the dance."
+		"advice":"but you shall not err, dance the dance.",
+		"deck":"tarot_cards"
 	}
 ]
