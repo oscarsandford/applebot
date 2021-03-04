@@ -14,11 +14,11 @@ const fs = require("fs");
 const cards_trading = JSON.parse(fs.readFileSync("src/resources/cards.json", "utf-8"));
 const cards_tarot = JSON.parse(fs.readFileSync("src/resources/tavernarcana.json", "utf-8"));
 const weights = [
-	1,1,
-	2,2,2,2,
-	3,3,3,3,3,
-	4,4,4,4,4,
-	5,5,5,5
+	1,1,1,
+	2,2,2,2,2,
+	3,3,3,3,3,3,
+	4,4,4,4,
+	5,5,
 ];
 
 // Sets for user on cooldown for drawing from decks
@@ -29,6 +29,7 @@ const recently_drawn_tarot = new Set();
 const admin_module = require("./functions/admin.js");
 const user_module = require("./functions/user.js");
 const collections_module = require("./functions/collections.js");
+const quotes_module = require("./functions/quotes.js");
 
 // Startup
 discord_client.once("ready", () => {
@@ -70,6 +71,15 @@ discord_client.on("message", message => {
 		// Reset card draw cooldown for the given user
 		if (message.content.startsWith(`${prefix}resetcd`) && user_mentioned) {
 			admin_module.resetcd(user_mentioned, [recently_drawn, recently_drawn_tarot], message);
+		}
+		// Delete quotes based on if they contain a given substring, case insensitive
+		if (message.content.startsWith(`${prefix}unquote`)) {
+			let substr = message.content.split(" ").slice(1,).join(" ");
+			if (quotes_module.remove_quotes(mongo, mdb_db, mdb_user_quotes, 
+				substr.toLowerCase()
+			)) {
+				message.react("👍");
+			}
 		}
 	}
 
@@ -113,17 +123,53 @@ discord_client.on("message", message => {
 				);
 			}
 			else {
-				message.channel.send("Can't find that card in trading cards or tarot decks.");
+				message.react("😐");
 			}
 		}
 	}
 
+	// Adds the mentioned user's quote to the database
+	if (message.content.startsWith(`${prefix}quote`) && user_mentioned) {
+		let quote = message.content.split(" ").slice(2,).join(" ");
+		if (quotes_module.add_quote(mongo, mdb_db, mdb_user_quotes, 
+			user_mentioned.user.id, quote, message.author.id
+		)) {
+			message.react("👍");
+		}
+	}
+	
 	// Match exact, case-insensitive message contents
 	switch (message.content.toLowerCase()) {
 		case "hi apple":
 			user_module.apple_response(message);
 			break;
 	
+		// Returns a random quote from the quotes collection
+		case `${prefix}quote`:
+			mongo.connect(process.env.DB_CONNECTION_STRING, {useUnifiedTopology: true}, async function(err, client) {
+				if (err) throw err;
+				let db = client.db(mdb_db);
+				let all_quotes = await db.collection(mdb_user_quotes).find().toArray();
+				client.close();
+				// Select a random quote
+				let rquote = all_quotes[Math.floor(Math.random()*all_quotes.length)];
+				let quotee_user = await discord_client.users.fetch(rquote["quotee"]);
+				let quotee_guild_user = message.guild.member(quotee_user);
+				// Wrap some quotation marks around the quote if it doesn't have any
+				if (!rquote["quote_text"].startsWith("\"")) {
+					rquote["quote_text"] = "\""+rquote["quote_text"]+"\"";
+				}
+				// If the quotee is in the current guild (server), we take print their nickname besides 
+				// their quote. Otherwise, we just make use of their current Discord username, which is global.
+				if (quotee_guild_user) {
+					message.channel.send("*"+rquote["quote_text"]+"* \t- "+quotee_guild_user.nickname);
+				}
+				else {
+					message.channel.send("*"+rquote["quote_text"]+"* \t- "+quotee_user.username);
+				}
+			});
+			break;
+
 		// Displays the message sender's card collection
 		case `${prefix}mycollection`:
 		case `${prefix}mc`:
@@ -171,7 +217,7 @@ discord_client.on("message", message => {
 				collections_module.set_cooldown(message.author.id, recently_drawn, 600000);
 			}
 			else {
-				message.channel.send("You must wait some time before drawing again.");
+				message.react("⏳");
 			}
 			break;
 
@@ -205,7 +251,7 @@ discord_client.on("message", message => {
 				collections_module.set_cooldown(message.author.id, recently_drawn_tarot, 14400000);
 			}
 			else {
-				message.channel.send("You must wait some time before drawing again.");
+				message.react("⏳");
 			}
 			break;
 	}

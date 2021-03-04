@@ -1,12 +1,12 @@
 module.exports = {
 	kick : async function (member, message) {
 		await member.kick();
-		message.channel.send(member.displayName+" got the boot!"+" :boot:");
+		message.channel.send(member.displayName+" got the boot!");
 	},
 
 	ban : async function (member, message) {
 		await member.ban();
-		message.channel.send(member.displayName+" got MC Hammer'd!"+" :hammer:");
+		message.channel.send(member.displayName+" got MC Hammer'd!");
 	},
 
 	purge : function (count, message) {
@@ -24,6 +24,6 @@ module.exports = {
 		for (const set of cooldown_sets) {
 			set.delete(member.user.id);
 		}
-		message.channel.send("Reset all draw timers for "+member.user.username+".");
+		message.react("⌛");
 	}
 }

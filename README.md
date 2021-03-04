@@ -31,21 +31,24 @@ $ npm start
 *(run these in the chat box of your Discord server when the bot is installed and online)*
 
 ```js
-hi apple        		// returns a response greeting based on the time of day
-$drawaugust or $da		// draw a card from the August Trading Cards collection
-$mycollection or $ma  		// display the message author's card collection
-$drawtarot or $dt		// draw a card from the Tavern Arcana
-$describecard <cname>		// returns a preview of the card with cname, if it exists
-$resetmc     			// reset the card collection of the user that called it
+hi apple        		// Returns a response greeting based on the time of day
+$drawaugust or $da		// Draw a card from the August Trading Cards collection
+$mycollection or $ma  		// Display the message author's card collection
+$drawtarot or $dt		// Draw a card from the Tavern Arcana
+$describecard card_name		// Returns a preview of the card with card_name, if it exists
+$resetmc     			// Reset the card collection of the user that called it
+$quote 					// Returns a random quote out of context
+$quote @user funny quote	// Adds "funny quote" to the list of @user's quotes
 ```
 
 Moderator only (needs BAN_MEMBERS permission):
 ```js
-$purge <int>    		// remove the last <int> messages in the current channel, up to 50
-$kick <@user>   		// kicks mentioned user from the current server
-$ban <@user>   			// bans mentioned user from the current server
-$resetcd        		// reset the card draw cooldown timer for the message author
-$resetmc <@user>     		// reset a user's card collection
+$purge int   		// Remove the last int messages in the current channel, up to 50
+$kick @user   		// Kicks mentioned user from the current server
+$ban @user   			// Bans mentioned user from the current server
+$resetcd        		// Reset the card draw cooldown timer for the message author
+$resetmc @user    		// Reset a user's card collection
+$unquote @user funny 	// Removes quotes that include the given substring (removes "funny quote")
 ```
 
 <hr>

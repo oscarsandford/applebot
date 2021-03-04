@@ -6,7 +6,7 @@ module.exports = {
 			await db.collection(dbcollection).deleteMany({discord_id : target.id});
 			client.close();
 		});
-		message.channel.send("Collection reset for "+target.username+".");
+		message.react("👍");
 	},
 
 	describecard : function (target, cards_trading, cards_tarot) {
