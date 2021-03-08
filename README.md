@@ -37,7 +37,7 @@ $mycollection or $ma  		// Display the message author's card collection
 $drawtarot or $dt		// Draw a card from the Tavern Arcana
 $describecard card_name		// Returns a preview of the card with card_name, if it exists
 $resetmc     			// Reset the card collection of the user that called it
-$quote 					// Returns a random quote out of context
+$quote 				// Returns a random quote out of context
 $quote @user funny quote	// Adds "funny quote" to the list of @user's quotes
 ```
 
@@ -45,9 +45,9 @@ Moderator only (needs BAN_MEMBERS permission):
 ```js
 $purge int   		// Remove the last int messages in the current channel, up to 50
 $kick @user   		// Kicks mentioned user from the current server
-$ban @user   			// Bans mentioned user from the current server
-$resetcd        		// Reset the card draw cooldown timer for the message author
-$resetmc @user    		// Reset a user's card collection
+$ban @user   		// Bans mentioned user from the current server
+$resetcd        	// Reset the card draw cooldown timer for the message author
+$resetmc @user    	// Reset a user's card collection
 $unquote @user funny 	// Removes quotes that include the given substring (removes "funny quote")
 ```
 
