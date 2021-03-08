@@ -41,12 +41,20 @@ module.exports = {
 		mongo.connect(process.env.DB_CONNECTION_STRING, {useUnifiedTopology: true}, async function(err, client) {
 			if (err) throw err;
 			let db = client.db(dbname);
-			// If drawn card in user collection, increment the card's level and replace it with the incremented card
-			let card_exists = await db.collection(dbcollection).findOne({discord_id : target, card : c});
-			if (card_exists) {
-				await db.collection(dbcollection).deleteOne({discord_id : target, card : c});
+
+			// See how many copies of this card WITH THIS LEVEL already exist.
+			let count = await db.collection(dbcollection).countDocuments({discord_id : target, card : c});
+			while (count > 0) {
+				// Delete the duplicates.
+				for (let i = 0; i < count; i++) {
+					await db.collection(dbcollection).deleteOne({discord_id : target, card : c});
+				}
+				// Increment the level of this card.
 				c["level"]++;
+				// See if we have any more cards of this new level to consolidate.
+				count = await db.collection(dbcollection).countDocuments({discord_id : target, card : c});
 			}
+			// Add the card.
 			await db.collection(dbcollection).insertOne({discord_id : target, card : c});
 			client.close();
 		});

@@ -32,8 +32,18 @@ const collections_module = require("./functions/collections.js");
 const quotes_module = require("./functions/quotes.js");
 
 // Startup
-discord_client.once("ready", () => {
+discord_client.on("ready", () => {
 	console.log("> Apple Activated");
+	// Development mode status to indicate "in maintenance" :)
+	if (process.env.NODE_ENV !== "production") {
+		discord_client.user.setPresence({
+			status : "dnd",
+			activity : {
+				name : "some idiot code me.",
+				type : "WATCHING"
+			}
+		});
+	}
 });
 
 // DEVELOPMENT MODE for local testing.
@@ -203,6 +213,8 @@ discord_client.on("message", message => {
 		case `${prefix}da`:
 			if (!recently_drawn.has(message.author.id)) {
 				let c = collections_module.pick_drawtrading(cards_trading, weights);
+				// For some reason I have to set the level to 0 manually.
+				c["level"] = 0;
 
 				message.channel.send(
 					new Discord.MessageEmbed()
