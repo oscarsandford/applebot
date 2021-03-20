@@ -14,8 +14,8 @@ A multi-function Discord.js bot running in Node.js for Discord servers.
 This project requires [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) to be installed, as well as the dependencies in `package.json`. <br>
 Clone the repository and install the dependencies with
 ```sh
-$ git clone https://github.com/oscarsandford/Applebot.git
-$ cd Applebot
+$ git clone https://github.com/oscarsandford/applebot.git
+$ cd applebot
 $ npm install
 ```
 
@@ -37,8 +37,9 @@ $mycollection or $ma  		// Display the message author's card collection
 $drawtarot or $dt		// Draw a card from the Tavern Arcana
 $describecard card_name		// Returns a preview of the card with card_name, if it exists
 $resetmc     			// Reset the card collection of the user that called it
-$quote 				// Returns a random quote out of context
+$quote or $dq 				// Returns a random quote out of context
 $quote @user funny quote	// Adds "funny quote" to the list of @user's quotes
+$quotethat				// Quote the sender of the last message sent before this command
 ```
 
 Moderator only (needs BAN_MEMBERS permission):

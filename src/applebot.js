@@ -154,8 +154,21 @@ discord_client.on("message", message => {
 			user_module.apple_response(message);
 			break;
 	
+		// Quotes the last message in the current text channel
+		case `${prefix}quotethat`:
+			message.channel.messages.fetch({limit : 2}).then((res) => {
+				let qmsg = res.array()[1];
+				if (quotes_module.add_quote(mongo, mdb_db, mdb_user_quotes, 
+					qmsg.author.id, qmsg.content, message.author.id
+				)) {
+					message.react("👍");
+				}
+			});
+			break;
+
 		// Returns a random quote from the quotes collection
 		case `${prefix}quote`:
+		case `${prefix}dq`:
 			mongo.connect(process.env.DB_CONNECTION_STRING, {useUnifiedTopology: true}, async function(err, client) {
 				if (err) throw err;
 				let db = client.db(mdb_db);
@@ -194,16 +207,13 @@ discord_client.on("message", message => {
 					.setColor("DARK_GOLD");
 
 				collections_module.sort_mycollection(items);
-				let count = 0;
-				
-				items.forEach(el => {
-					let n = el["card"]["name"] +" +"+ el["card"]["level"];
-					let v = ":star:".repeat(el["card"]["rank"]);
+				// Display a maximum of 9 entries
+				for (let i = 0; i < 9 && i < items.length; i++) {
+					let n = items[i]["card"]["name"] +" +"+ items[i]["card"]["level"];
+					let v = ":star:".repeat(items[i]["card"]["rank"]);
 					collection_embed.addField(n, v, true);
-					count++;
-				});
-
-				collection_embed.setDescription(count+" entries.");
+				}
+				collection_embed.setDescription(items.length+" entries total.");
 				message.channel.send(collection_embed);
 			});
 			break;
