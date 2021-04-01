@@ -249,6 +249,14 @@ discord_client.on("message", message => {
 			if (!recently_drawn_tarot.has(message.author.id)) {
 				let cards = collections_module.pick_draw3tarot(cards_tarot, message.author.username);
 
+				// April Fools means the main card is always The Fool!
+				let day = new Date();
+				let utc_hours = day.getHours();
+				day.setHours(utc_hours - 7);
+				if (day.getMonth() === 3 && day.getDate() === 1 && day.getHours() >= 0 && day.getHours() <= 23) {
+					cards[0] = cards_tarot[0];
+				}
+
 				message.channel.send(
 					new Discord.MessageEmbed()
 					.setTitle(cards[0]["numeral"] + " : " + cards[0]["name"] + " " + cards[0]["emoji"])
