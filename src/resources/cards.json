@@ -46,5 +46,8 @@
 	{"id": 45, "name":"The Exodia", "rank":5, "level":0, "imglink":"https://media.discordapp.net/attachments/775925249731723264/813221080961122324/Screenshot_20.png?width=589&height=573", "deck":"trading_cards"},
 	{"id": 46, "name":"The Drunk Consumer", "rank":4, "level":0, "imglink":"https://media.discordapp.net/attachments/775925249731723264/813221127274233857/image0.jpg?width=430&height=573", "deck":"trading_cards"},
 	{"id": 47, "name":"The Puppet Master", "rank":5, "level":0, "imglink":"https://media.discordapp.net/attachments/775925249731723264/813221182798561330/unknown_25.png", "deck":"trading_cards"},
-	{"id": 48, "name":"The Depleted", "rank":1, "level":0, "imglink":"https://media.discordapp.net/attachments/775925249731723264/813221253170855986/Snapchat-541969168.jpg?width=323&height=573", "deck":"trading_cards"}
+	{"id": 48, "name":"The Depleted", "rank":1, "level":0, "imglink":"https://media.discordapp.net/attachments/775925249731723264/813221253170855986/Snapchat-541969168.jpg?width=323&height=573", "deck":"trading_cards"},
+	{"id": 49, "name":"The Relaxed", "rank":2, "level":0, "imglink":"https://media.discordapp.net/attachments/775925249731723264/831026998770925598/20210213_143134.jpg?width=405&height=540", "deck":"trading_cards"},
+	{"id": 50, "name":"The Corona", "rank":3, "level":0, "imglink":"https://media.discordapp.net/attachments/775925249731723264/831027042291154955/Snapchat-119481825.jpg?width=281&height=540", "deck":"trading_cards"},
+	{"id": 51, "name":"The Bigweld", "rank":1, "level":0, "imglink":"https://media.discordapp.net/attachments/775925249731723264/831027072193134653/Resized_20210411_202650.jpg?width=243&height=540", "deck":"trading_cards"}
 ]
