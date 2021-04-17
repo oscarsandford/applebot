@@ -102,7 +102,7 @@ discord_client.on("message", message => {
 	}
 
 	// Reset card collection of self or given user
-	else if (message.content.startsWith(`${prefix}resetmc`)) {
+	if (message.content.startsWith(`${prefix}resetmc`)) {
 		let target = "";
 		// Reset mentioned user's collection (admin) or their own (not admin)
 		if (user_mentioned && author_is_admin) {
@@ -146,7 +146,8 @@ discord_client.on("message", message => {
 
 	// Adds the mentioned user's quote to the database
 	else if (message.content.startsWith(`${prefix}quote`) && user_mentioned) {
-		let quote = message.content.split(" ").slice(2,).join(" ");
+		// Remove double spaces anywhere.
+		let quote = message.content.replace(" ", "").split(" ").slice(2,).join(" ");
 		if (quotes_module.add_quote(mongo, mdb_db, mdb_user_quotes, 
 			user_mentioned.user.id, quote, message.author.id
 		)) {
@@ -155,7 +156,7 @@ discord_client.on("message", message => {
 	}
 
 	// Returns a random quote from the quotes collection given a substring it must have.
-	if (message.content.startsWith(`${prefix}findquote`) && message.content.length > 11)  {
+	else if (message.content.startsWith(`${prefix}findquote`) && message.content.length > 11)  {
 		let substr = message.content.slice(11, message.content.length).toLowerCase();
 		mongo.connect(process.env.DB_CONNECTION_STRING, {useUnifiedTopology: true}, async function(err, client) {
 			if (err) throw err;
