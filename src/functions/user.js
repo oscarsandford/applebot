@@ -18,10 +18,10 @@ module.exports = {
 
 	get_username : async function (dclient, dguild, target_id) {
 		let quotee_user = await dclient.users.fetch(target_id);
-		let quotee_guild_user = dguild.member(quotee_user);
+		let quotee_guild_user = await dguild.member(quotee_user);
 		// If the quotee is in the current guild (server), we take return their nickname.
 		// Otherwise, we just make use of their current Discord username, which is global.
-		if (quotee_guild_user) return quotee_guild_user.nickname;
+		if (quotee_guild_user && quotee_guild_user.nickname) return quotee_guild_user.nickname;
 		else return quotee_user.username;
 	}
 }
