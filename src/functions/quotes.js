@@ -24,7 +24,11 @@ module.exports = {
 			// There is definitely a cleaner way of doing this with regex, but I couldn't get it to work this time.
 			let all_quotes = await db.collection(dbcollection).find().toArray();
 			let matching_quotes = all_quotes.filter((q) => q["quote_text"].toLowerCase().includes(substr));
-
+			// Yeah, let's NOT drop the whole database.
+			if (matching_quotes.length > 5) {
+				client.close();
+				return false;
+			}
 			// Removes all the quotes that match the target substring.
 			for (const q of matching_quotes) {
 				await db.collection(dbcollection).deleteOne({

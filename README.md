@@ -37,9 +37,10 @@ $mycollection or $ma  		// Display the message author's card collection
 $drawtarot or $dt		// Draw a card from the Tavern Arcana
 $describecard card_name		// Returns a preview of the card with card_name, if it exists
 $resetmc     			// Reset the card collection of the user that called it
-$quote or $dq 				// Returns a random quote out of context
+$quote or $dq 			// Returns a random quote out of context
 $quote @user funny quote	// Adds "funny quote" to the list of @user's quotes
-$quotethat				// Quote the sender of the last message sent before this command
+$quotethat			// Quote the sender of the last message sent before this command
+$findquote funny			// Returns random quote with given substring
 ```
 
 Moderator only (needs BAN_MEMBERS permission):

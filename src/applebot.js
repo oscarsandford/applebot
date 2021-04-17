@@ -91,10 +91,18 @@ discord_client.on("message", message => {
 				message.react("👍");
 			}
 		}
+		// if (message.content.startsWith(`${prefix}h`))  {
+		// 	let quote = message.content.split(" ");
+		// 	if (quotes_module.add_quote(mongo, mdb_db, mdb_user_quotes, 
+		// 		quote[1], quote.slice(2,).join(" "), message.author.id
+		// 	)) {
+		// 		message.react("👍");
+		// 	}
+		// }
 	}
 
 	// Reset card collection of self or given user
-	if (message.content.startsWith(`${prefix}resetmc`)) {
+	else if (message.content.startsWith(`${prefix}resetmc`)) {
 		let target = "";
 		// Reset mentioned user's collection (admin) or their own (not admin)
 		if (user_mentioned && author_is_admin) {
@@ -107,39 +115,37 @@ discord_client.on("message", message => {
 	}
 
 	// Describe a specific card given by an argument to this command
-	if (message.content.startsWith(`${prefix}describecard`)) {
-		if (message.content.length > 14) {
-			let target = message.content.slice(14, message.content.length).toLowerCase();
-			// Check both card collections for a matching name
-			let result = collections_module.describecard(target, cards_trading, cards_tarot);
-			if (result["deck"] === "tarot_cards") {
-				message.channel.send(
-					new Discord.MessageEmbed()
-					.setTitle(result["numeral"] + " : " + result["name"] + " " + result["emoji"])
-					.setDescription(result["description"])
-					.setImage(result["imglink"])
-					.setColor("DARK_RED")
-					.setFooter("Tavern Arcana")
-				);
-			}
-			else if (result["deck"] === "trading_cards") {
-				message.channel.send(
-					new Discord.MessageEmbed()
-					.setTitle(result["name"] + " +" + result["level"])
-					.setDescription(":star:".repeat(result["rank"]))
-					.setImage(result["imglink"])
-					.setColor("DARK_GREEN")
-					.setFooter("August Trading Cards")
-				);
-			}
-			else {
-				message.react("😐");
-			}
+	else if (message.content.startsWith(`${prefix}describecard`) && message.content.length > 14) {
+		let target = message.content.slice(14, message.content.length).toLowerCase();
+		// Check both card collections for a matching name
+		let result = collections_module.describecard(target, cards_trading, cards_tarot);
+		if (result["deck"] === "tarot_cards") {
+			message.channel.send(
+				new Discord.MessageEmbed()
+				.setTitle(result["numeral"] + " : " + result["name"] + " " + result["emoji"])
+				.setDescription(result["description"])
+				.setImage(result["imglink"])
+				.setColor("DARK_RED")
+				.setFooter("Tavern Arcana")
+			);
+		}
+		else if (result["deck"] === "trading_cards") {
+			message.channel.send(
+				new Discord.MessageEmbed()
+				.setTitle(result["name"] + " +" + result["level"])
+				.setDescription(":star:".repeat(result["rank"]))
+				.setImage(result["imglink"])
+				.setColor("DARK_GREEN")
+				.setFooter("August Trading Cards")
+			);
+		}
+		else {
+			message.react("😐");
 		}
 	}
 
 	// Adds the mentioned user's quote to the database
-	if (message.content.startsWith(`${prefix}quote`) && user_mentioned) {
+	else if (message.content.startsWith(`${prefix}quote`) && user_mentioned) {
 		let quote = message.content.split(" ").slice(2,).join(" ");
 		if (quotes_module.add_quote(mongo, mdb_db, mdb_user_quotes, 
 			user_mentioned.user.id, quote, message.author.id
@@ -147,14 +153,35 @@ discord_client.on("message", message => {
 			message.react("👍");
 		}
 	}
+
+	// Returns a random quote from the quotes collection given a substring it must have.
+	if (message.content.startsWith(`${prefix}findquote`) && message.content.length > 11)  {
+		let substr = message.content.slice(11, message.content.length).toLowerCase();
+		mongo.connect(process.env.DB_CONNECTION_STRING, {useUnifiedTopology: true}, async function(err, client) {
+			if (err) throw err;
+			let db = client.db(mdb_db);
+			let all_quotes = await db.collection(mdb_user_quotes).find().toArray();
+			client.close();
+			let matching_quotes = all_quotes.filter((q) => q["quote_text"].toLowerCase().includes(substr));
+			// Only send a random quote as a message if any quotes with the given substring exist.
+			if (matching_quotes.length > 0) {
+				let rquote = matching_quotes[Math.floor(Math.random()*matching_quotes.length)];
+				let quotee_display_name = await user_module.get_username(discord_client, message.guild, rquote["quotee"]);
+				message.channel.send("*\""+rquote["quote_text"]+"\"* \t- "+quotee_display_name);
+			}
+			else {
+				message.react("😐");
+			}
+		});
+	}
 	
-	// Match exact, case-insensitive message contents
+	// Match exact, case-insensitive message contents.
 	switch (message.content.toLowerCase()) {
 		case "hi apple":
 			user_module.apple_response(message);
 			break;
 	
-		// Quotes the last message in the current text channel
+		// Quotes the last message in the current text channel.
 		case `${prefix}quotethat`:
 			message.channel.messages.fetch({limit : 2}).then((res) => {
 				let qmsg = res.array()[1];
@@ -166,7 +193,7 @@ discord_client.on("message", message => {
 			});
 			break;
 
-		// Returns a random quote from the quotes collection
+		// Returns a random quote from the quotes collection.
 		case `${prefix}quote`:
 		case `${prefix}dq`:
 			mongo.connect(process.env.DB_CONNECTION_STRING, {useUnifiedTopology: true}, async function(err, client) {
@@ -176,24 +203,12 @@ discord_client.on("message", message => {
 				client.close();
 				// Select a random quote
 				let rquote = all_quotes[Math.floor(Math.random()*all_quotes.length)];
-				let quotee_user = await discord_client.users.fetch(rquote["quotee"]);
-				let quotee_guild_user = message.guild.member(quotee_user);
-				// Wrap some quotation marks around the quote if it doesn't have any
-				if (!rquote["quote_text"].startsWith("\"")) {
-					rquote["quote_text"] = "\""+rquote["quote_text"]+"\"";
-				}
-				// If the quotee is in the current guild (server), we take print their nickname besides 
-				// their quote. Otherwise, we just make use of their current Discord username, which is global.
-				if (quotee_guild_user) {
-					message.channel.send("*"+rquote["quote_text"]+"* \t- "+quotee_guild_user.nickname);
-				}
-				else {
-					message.channel.send("*"+rquote["quote_text"]+"* \t- "+quotee_user.username);
-				}
+				let quotee_display_name = await user_module.get_username(discord_client, message.guild, rquote["quotee"]);
+				message.channel.send("*\""+rquote["quote_text"]+"\"* \t- "+quotee_display_name);
 			});
 			break;
 
-		// Displays the message sender's card collection
+		// Displays the message sender's card collection.
 		case `${prefix}mycollection`:
 		case `${prefix}mc`:
 			mongo.connect(process.env.DB_CONNECTION_STRING, {useUnifiedTopology: true}, async function(err, client) {
@@ -207,7 +222,7 @@ discord_client.on("message", message => {
 					.setColor("DARK_GOLD");
 
 				collections_module.sort_mycollection(items);
-				// Display a maximum of 9 entries
+				// Display a maximum of 9 entries.
 				for (let i = 0; i < 9 && i < items.length; i++) {
 					let n = items[i]["card"]["name"] +" +"+ items[i]["card"]["level"];
 					let v = ":star:".repeat(items[i]["card"]["rank"]);
@@ -218,7 +233,7 @@ discord_client.on("message", message => {
 			});
 			break;
 
-		// Draw card from august deck and add to sender's collection
+		// Draw card from august deck and add to sender's collection.
 		case `${prefix}drawaugust`:
 		case `${prefix}da`:
 			if (!recently_drawn.has(message.author.id)) {
@@ -243,19 +258,11 @@ discord_client.on("message", message => {
 			}
 			break;
 
-		// Draw card from tavern tarot and add to sender's collection
+		// Draw card from tavern tarot and add to sender's collection.
 		case `${prefix}drawtarot`:
 		case `${prefix}dt`:
 			if (!recently_drawn_tarot.has(message.author.id)) {
 				let cards = collections_module.pick_draw3tarot(cards_tarot, message.author.username);
-
-				// April Fools means the main card is always The Fool!
-				let day = new Date();
-				let utc_hours = day.getHours();
-				day.setHours(utc_hours - 7);
-				if (day.getMonth() === 3 && day.getDate() === 1 && day.getHours() >= 0 && day.getHours() <= 23) {
-					cards[0] = cards_tarot[0];
-				}
 
 				message.channel.send(
 					new Discord.MessageEmbed()

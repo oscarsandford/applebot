@@ -5,11 +5,23 @@ module.exports = {
 		let hour_of_day = day.getHours() - 7;
 		if (hour_of_day < 0) hour_of_day = 24 + hour_of_day;
 
-		if (hour_of_day > 17)
+		if (hour_of_day > 17)  {
 			message.channel.send("Good evening, "+message.author.username+". :apple:");
-		else if (hour_of_day > 12)
+		}
+		else if (hour_of_day > 12)  {
 			message.channel.send("Good afternoon, "+message.author.username+"! :apple:");
-		else
+		}
+		else  {
 			message.channel.send("Good morning, "+message.author.username+"! :apple:");
+		}	
+	},
+
+	get_username : async function (dclient, dguild, target_id) {
+		let quotee_user = await dclient.users.fetch(target_id);
+		let quotee_guild_user = dguild.member(quotee_user);
+		// If the quotee is in the current guild (server), we take return their nickname.
+		// Otherwise, we just make use of their current Discord username, which is global.
+		if (quotee_guild_user) return quotee_guild_user.nickname;
+		else return quotee_user.username;
 	}
 }
