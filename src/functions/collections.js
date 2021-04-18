@@ -17,12 +17,12 @@ module.exports = {
 		else return {"deck":"none"};
 	},
 
-	sort_mycollection : function (items) {
+	sort_mycollection : function (items, attr) {
 		// Select sort displayed cards in desc order
 		let i, j;
 		for (i = 0; i < items.length; i++) {
 			for (j = i+1; j < items.length; j++) {
-				if (items[j]["card"]["rank"] > items[i]["card"]["rank"]) {
+				if (items[j]["card"][attr] > items[i]["card"][attr]) {
 					[items[i], items[j]] = [items[j], items[i]];
 				}
 			}

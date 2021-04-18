@@ -91,14 +91,6 @@ discord_client.on("message", message => {
 				message.react("👍");
 			}
 		}
-		// if (message.content.startsWith(`${prefix}h`))  {
-		// 	let quote = message.content.split(" ");
-		// 	if (quotes_module.add_quote(mongo, mdb_db, mdb_user_quotes, 
-		// 		quote[1], quote.slice(2,).join(" "), message.author.id
-		// 	)) {
-		// 		message.react("👍");
-		// 	}
-		// }
 	}
 
 	// Reset card collection of self or given user
@@ -147,7 +139,7 @@ discord_client.on("message", message => {
 	// Adds the mentioned user's quote to the database
 	else if (message.content.startsWith(`${prefix}quote`) && user_mentioned) {
 		// Remove double spaces anywhere.
-		let quote = message.content.replace(" ", "").split(" ").slice(2,).join(" ");
+		let quote = message.content.replace(" ", "").split(" ").slice(1,).join(" ");
 		if (quotes_module.add_quote(mongo, mdb_db, mdb_user_quotes, 
 			user_mentioned.user.id, quote, message.author.id
 		)) {
@@ -222,7 +214,7 @@ discord_client.on("message", message => {
 					.setTitle(message.author.username + "'s Collection")
 					.setColor("DARK_GOLD");
 
-				collections_module.sort_mycollection(items);
+				collections_module.sort_mycollection(items, "level");
 				// Display a maximum of 9 entries.
 				for (let i = 0; i < 9 && i < items.length; i++) {
 					let n = items[i]["card"]["name"] +" +"+ items[i]["card"]["level"];

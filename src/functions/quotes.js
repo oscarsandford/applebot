@@ -17,7 +17,7 @@ module.exports = {
 		});
 	},
 
-	remove_quotes : async function(mongo, dbname, dbcollection, substr) {
+	remove_quotes : async function (mongo, dbname, dbcollection, substr) {
 		mongo.connect(process.env.DB_CONNECTION_STRING, {useUnifiedTopology: true}, async function(err, client) {
 			if (err) return false;
 			let db = client.db(dbname);
