@@ -9,10 +9,10 @@
   "author": "oscarsandford",
   "license": "MIT",
   "dependencies": {
-    "discord.js": "^12.4.1",
+    "discord.js": "^12.5.3",
     "dotenv": "^8.2.0",
-    "mongodb": "^3.6.3",
-    "node": "^15.0.1",
+    "mongodb": "^4.2.1",
+    "node": "^16.13.0",
     "nodemon": "^2.0.6"
   }
 }

@@ -16,10 +16,10 @@ Clone the repository and install the dependencies with
 ```sh
 $ git clone https://github.com/oscarsandford/applebot.git
 $ cd applebot
-$ npm install
+$ npm ci
 ```
 
-It requires API keys for Discord and MongoDB. Add them as environment variables as needed, or use the code in this repository as a starting point for your own systems. <br>
+It requires API keys for Discord and MongoDB. Add them as environment variables as needed in a new file `src/devconf.json`. Otherwise, use the code in this repository as a starting point for your own systems. <br>
 Run the app in a development environment with
 ```sh
 $ npm start
