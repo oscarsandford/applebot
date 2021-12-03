@@ -1,6 +1,9 @@
 // Discord
-const Discord = require("discord.js");
-const discord_client = new Discord.Client();
+const { MessageEmbed, Client, Intents, Permissions } = require("discord.js");
+const discord_client = new Client({intents : [
+	Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_BANS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, 
+	Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.GUILD_MESSAGE_REACTIONS
+]});
 const prefix = "$";
 
 // MongoDB
@@ -9,7 +12,7 @@ const mdb_db = "tavern";
 const mdb_user_collections = "user_collections";
 const mdb_user_quotes = "user_quotes";
 
-// Gacha decks JSON
+// Gacha decks.
 const fs = require("fs");
 const cards_trading = JSON.parse(fs.readFileSync("src/resources/cards.json", "utf-8"));
 const cards_tarot = JSON.parse(fs.readFileSync("src/resources/tavernarcana.json", "utf-8"));
@@ -57,11 +60,11 @@ if (process.env.NODE_ENV !== "production") {
 
 
 // Catch each message and check it...
-discord_client.on("message", message => {
+discord_client.on("messageCreate", message => {
 	if (!message.guild) return;
 
-	// Define an admin as a user who has the kick and ban permissions.
-	const author_is_admin = message.member.hasPermission(["KICK_MEMBERS", "BAN_MEMBERS"]);
+	// Define an admin as a user who has ban permissions.
+	const author_is_admin = message.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS);
 	const user_mentioned = message.mentions.members.first();
 
 	if (author_is_admin) {
@@ -112,24 +115,24 @@ discord_client.on("message", message => {
 		// Check both card collections for a matching name
 		let result = collections_module.describecard(target, cards_trading, cards_tarot);
 		if (result["deck"] === "tarot_cards") {
-			message.channel.send(
-				new Discord.MessageEmbed()
+			message.channel.send({embeds : [
+				new MessageEmbed()
 				.setTitle(result["numeral"] + " : " + result["name"] + " " + result["emoji"])
 				.setDescription(result["description"])
 				.setImage(result["imglink"])
 				.setColor("DARK_RED")
 				.setFooter("Tavern Arcana")
-			);
+			]});
 		}
 		else if (result["deck"] === "trading_cards") {
-			message.channel.send(
-				new Discord.MessageEmbed()
+			message.channel.send({embeds : [
+				new MessageEmbed()
 				.setTitle(result["name"] + " +" + result["level"])
 				.setDescription(":star:".repeat(result["rank"]))
 				.setImage(result["imglink"])
 				.setColor("DARK_GREEN")
 				.setFooter("August Trading Cards")
-			);
+			]});
 		}
 		else {
 			message.react("😐");
@@ -210,19 +213,19 @@ discord_client.on("message", message => {
 				let items = await db.collection(mdb_user_collections).find({discord_id : message.author.id}).toArray();
 				client.close();
 			
-				const collection_embed = new Discord.MessageEmbed()
+				const collection_embed = new MessageEmbed()
 					.setTitle(message.author.username + "'s Collection")
 					.setColor("DARK_GOLD");
-
+				
+				// Display the top leveled (maximum 9) entries.
 				collections_module.sort_mycollection(items, "level");
-				// Display a maximum of 9 entries.
 				for (let i = 0; i < 9 && i < items.length; i++) {
 					let n = items[i]["card"]["name"] +" +"+ items[i]["card"]["level"];
 					let v = ":star:".repeat(items[i]["card"]["rank"]);
 					collection_embed.addField(n, v, true);
 				}
 				collection_embed.setDescription(items.length+" entries total.");
-				message.channel.send(collection_embed);
+				message.channel.send({embeds:[collection_embed]});
 			});
 			break;
 
@@ -234,14 +237,14 @@ discord_client.on("message", message => {
 				// For some reason I have to set the level to 0 manually.
 				c["level"] = 0;
 
-				message.channel.send(
-					new Discord.MessageEmbed()
+				message.channel.send({embeds : [
+					new MessageEmbed()
 					.setTitle(c["name"] + " +" + c["level"])
 					.setDescription(":star:".repeat(c["rank"]))
 					.setImage(c["imglink"])
 					.setColor("DARK_GREEN")
 					.setFooter("August Trading Cards")
-				);
+				]});
 				
 				collections_module.add_drawtrading(mongo, mdb_db, mdb_user_collections, message.author.id, c);
 				collections_module.set_cooldown(message.author.id, recently_drawn, 600000);
@@ -256,9 +259,8 @@ discord_client.on("message", message => {
 		case `${prefix}dt`:
 			if (!recently_drawn_tarot.has(message.author.id)) {
 				let cards = collections_module.pick_draw3tarot(cards_tarot, message.author.username);
-
-				message.channel.send(
-					new Discord.MessageEmbed()
+				message.channel.send({embeds: [
+					new MessageEmbed()
 					.setTitle(cards[0]["numeral"] + " : " + cards[0]["name"] + " " + cards[0]["emoji"])
 					.setDescription(cards[0]["description"])
 					.addFields(
@@ -276,7 +278,7 @@ discord_client.on("message", message => {
 					.setImage(cards[0]["imglink"])
 					.setColor("DARK_RED")
 					.setFooter("Tavern Arcana")
-				);
+				]});
 
 				collections_module.set_cooldown(message.author.id, recently_drawn_tarot, 14400000);
 			}
