@@ -1,10 +1,9 @@
 // Discord
-const { MessageEmbed, Client, Intents, Permissions } = require("discord.js");
+const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton } = require("discord.js");
 const discord_client = new Client({intents : [
 	Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_BANS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, 
 	Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.GUILD_MESSAGE_REACTIONS
 ]});
-const prefix = "$";
 
 // MongoDB
 const mongo = require("mongodb").MongoClient;
@@ -59,162 +58,87 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 
-// Catch each message and check it...
-discord_client.on("messageCreate", message => {
-	if (!message.guild) return;
+discord_client.on("interactionCreate", async interaction => {
+	if (!interaction.isCommand()) return;
 
-	// Define an admin as a user who has ban permissions.
-	const author_is_admin = message.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS);
-	const user_mentioned = message.mentions.members.first();
-
-	if (author_is_admin) {
-		// Kick member
-		if (message.content.startsWith(`${prefix}kick`) && user_mentioned) {
-			admin_module.kick(user_mentioned, message);
-		}
-		// Ban member
-		if (message.content.startsWith(`${prefix}ban`) && user_mentioned) {
-			admin_module.ban(user_mentioned, message);
-		}
-		// Purge last <int> messages, up to 50
-		if (message.content.startsWith(`${prefix}purge`)) {
-			let count = message.content.split(" ");
-			if (count[1]) admin_module.purge(count[1], message);
-		}
-		// Reset card draw cooldown for the given user
-		if (message.content.startsWith(`${prefix}resetcd`) && user_mentioned) {
-			admin_module.resetcd(user_mentioned, [recently_drawn, recently_drawn_tarot], message);
-		}
-		// Delete quotes based on if they contain a given substring, case insensitive
-		if (message.content.startsWith(`${prefix}unquote`)) {
-			let substr = message.content.split(" ").slice(1,).join(" ");
-			if (quotes_module.remove_quotes(mongo, mdb_db, mdb_user_quotes, 
-				substr.toLowerCase()
-			)) {
-				message.react("👍");
+	switch (interaction.commandName) {
+		case "drawaugust":
+			if (recently_drawn.has(interaction.user.id)) {
+				await interaction.reply({content: "⏳", ephemeral: true});
+				return;
 			}
-		}
-	}
 
-	// Reset card collection of self or given user
-	if (message.content.startsWith(`${prefix}resetmc`)) {
-		let target = "";
-		// Reset mentioned user's collection (admin) or their own (not admin)
-		if (user_mentioned && author_is_admin) {
-			target = user_mentioned.user;
-		}
-		else {
-			target = message.author;
-		}
-		collections_module.resetmc(mongo, mdb_db, mdb_user_collections, target, message);
-	}
+			let c = collections_module.pick_drawtrading(cards_trading, weights);
+			c["level"] = 0;
 
-	// Describe a specific card given by an argument to this command
-	else if (message.content.startsWith(`${prefix}describecard`) && message.content.length > 14) {
-		let target = message.content.slice(14, message.content.length).toLowerCase();
-		// Check both card collections for a matching name
-		let result = collections_module.describecard(target, cards_trading, cards_tarot);
-		if (result["deck"] === "tarot_cards") {
-			message.channel.send({embeds : [
+			const row = new MessageActionRow()
+				.addComponents(
+					new MessageButton()
+						.setCustomId("primary")
+						.setLabel("Add to Collection")
+						.setStyle("PRIMARY")
+				);
+
+			const card = new MessageEmbed()
+				.setTitle(c["name"] + " +" + c["level"])
+				.setDescription(":star:".repeat(c["rank"]))
+				.setImage(c["imglink"])
+				.setColor("DARK_GREEN")
+				.setFooter("August Trading Cards");
+			
+			await interaction.reply({embeds : [card], components : [row]});
+			
+			const filter = i => i.customId === 'primary';
+			const collector = interaction.channel.createMessageComponentCollector({ filter, time: 10000 });
+			collector.on('collect', async i => {
+				if (i.customId === 'primary') {
+					collections_module.add_drawtrading(mongo, mdb_db, mdb_user_collections, i.user.id, c);
+					await i.update({ content: `Claimed by ${i.user.username}!`, components: [] });
+				}
+			});
+			collections_module.set_cooldown(interaction.user.id, recently_drawn, 600000);
+			break;
+		
+		
+		case "drawtarot":
+			if (recently_drawn_tarot.has(interaction.user.id)) {
+				await interaction.reply({content: "⏳", ephemeral: true});
+				return;
+			}
+			let cards = collections_module.pick_draw3tarot(cards_tarot, interaction.user.username);
+			await interaction.reply({embeds: [
 				new MessageEmbed()
-				.setTitle(result["numeral"] + " : " + result["name"] + " " + result["emoji"])
-				.setDescription(result["description"])
-				.setImage(result["imglink"])
+				.setTitle(cards[0]["numeral"] + " : " + cards[0]["name"] + " " + cards[0]["emoji"])
+				.setDescription(cards[0]["description"])
+				.addFields(
+					{ 
+						name: cards[1]["name"] + " " + cards[1]["emoji"], 
+						value: cards[1]["reverse"] + "...", 
+						inline: true 
+					},
+					{ 
+						name: cards[2]["name"] + " " + cards[2]["emoji"], 
+						value: "..." + cards[2]["advice"], 
+						inline: true 
+					}
+				)
+				.setImage(cards[0]["imglink"])
 				.setColor("DARK_RED")
 				.setFooter("Tavern Arcana")
 			]});
-		}
-		else if (result["deck"] === "trading_cards") {
-			message.channel.send({embeds : [
-				new MessageEmbed()
-				.setTitle(result["name"] + " +" + result["level"])
-				.setDescription(":star:".repeat(result["rank"]))
-				.setImage(result["imglink"])
-				.setColor("DARK_GREEN")
-				.setFooter("August Trading Cards")
-			]});
-		}
-		else {
-			message.react("😐");
-		}
-	}
-
-	// Adds the mentioned user's quote to the database
-	else if (message.content.startsWith(`${prefix}quote`) && user_mentioned) {
-		// Remove double spaces anywhere.
-		let quote = message.content.replace(" ", "").split(" ").slice(1,).join(" ");
-		if (quotes_module.add_quote(mongo, mdb_db, mdb_user_quotes, 
-			user_mentioned.user.id, quote, message.author.id
-		)) {
-			message.react("👍");
-		}
-	}
-
-	// Returns a random quote from the quotes collection given a substring it must have.
-	else if (message.content.startsWith(`${prefix}findquote`) && message.content.length > 11)  {
-		let substr = message.content.slice(11, message.content.length).toLowerCase();
-		mongo.connect(process.env.DB_CONNECTION_STRING, {useUnifiedTopology: true}, async function(err, client) {
-			if (err) throw err;
-			let db = client.db(mdb_db);
-			let all_quotes = await db.collection(mdb_user_quotes).find().toArray();
-			client.close();
-			let matching_quotes = all_quotes.filter((q) => q["quote_text"].toLowerCase().includes(substr));
-			// Only send a random quote as a message if any quotes with the given substring exist.
-			if (matching_quotes.length > 0) {
-				let rquote = matching_quotes[Math.floor(Math.random()*matching_quotes.length)];
-				let quotee_display_name = await user_module.get_username(discord_client, message.guild, rquote["quotee"]);
-				message.channel.send("*\""+rquote["quote_text"]+"\"* \t- "+quotee_display_name);
-			}
-			else {
-				message.react("😐");
-			}
-		});
-	}
-	
-	// Match exact, case-insensitive message contents.
-	switch (message.content.toLowerCase()) {
-		case "hi apple":
-			user_module.apple_response(message);
-			break;
-	
-		// Quotes the last message in the current text channel.
-		case `${prefix}quotethat`:
-			message.channel.messages.fetch({limit : 2}).then((res) => {
-				let qmsg = res.array()[1];
-				if (quotes_module.add_quote(mongo, mdb_db, mdb_user_quotes, 
-					qmsg.author.id, qmsg.content, message.author.id
-				)) {
-					message.react("👍");
-				}
-			});
+			collections_module.set_cooldown(interaction.user.id, recently_drawn_tarot, 14400000);
 			break;
 
-		// Returns a random quote from the quotes collection.
-		case `${prefix}quote`:
-		case `${prefix}dq`:
+
+		case "collection":
 			mongo.connect(process.env.DB_CONNECTION_STRING, {useUnifiedTopology: true}, async function(err, client) {
 				if (err) throw err;
 				let db = client.db(mdb_db);
-				let all_quotes = await db.collection(mdb_user_quotes).find().toArray();
-				client.close();
-				// Select a random quote
-				let rquote = all_quotes[Math.floor(Math.random()*all_quotes.length)];
-				let quotee_display_name = await user_module.get_username(discord_client, message.guild, rquote["quotee"]);
-				message.channel.send("*\""+rquote["quote_text"]+"\"* \t- "+quotee_display_name);
-			});
-			break;
-
-		// Displays the message sender's card collection.
-		case `${prefix}mycollection`:
-		case `${prefix}mc`:
-			mongo.connect(process.env.DB_CONNECTION_STRING, {useUnifiedTopology: true}, async function(err, client) {
-				if (err) throw err;
-				let db = client.db(mdb_db);
-				let items = await db.collection(mdb_user_collections).find({discord_id : message.author.id}).toArray();
+				let items = await db.collection(mdb_user_collections).find({discord_id : interaction.user.id}).toArray();
 				client.close();
 			
 				const collection_embed = new MessageEmbed()
-					.setTitle(message.author.username + "'s Collection")
+					.setTitle(interaction.user.username + "'s Collection")
 					.setColor("DARK_GOLD");
 				
 				// Display the top leveled (maximum 9) entries.
@@ -225,69 +149,68 @@ discord_client.on("messageCreate", message => {
 					collection_embed.addField(n, v, true);
 				}
 				collection_embed.setDescription(items.length+" entries total.");
-				message.channel.send({embeds:[collection_embed]});
+				await interaction.reply({embeds:[collection_embed]});
 			});
 			break;
 
-		// Draw card from august deck and add to sender's collection.
-		case `${prefix}drawaugust`:
-		case `${prefix}da`:
-			if (!recently_drawn.has(message.author.id)) {
-				let c = collections_module.pick_drawtrading(cards_trading, weights);
-				// For some reason I have to set the level to 0 manually.
-				c["level"] = 0;
+		
+		case "resetcollection":
+			// TODO: have it so there's a role-restricted option 
+			// for admins to reset another users's collection.
+			collections_module.resetmc(mongo, mdb_db, mdb_user_collections, interaction.user);
+			await interaction.reply({content: "It is done.", ephemeral: true})
+			break;
 
-				message.channel.send({embeds : [
-					new MessageEmbed()
-					.setTitle(c["name"] + " +" + c["level"])
-					.setDescription(":star:".repeat(c["rank"]))
-					.setImage(c["imglink"])
-					.setColor("DARK_GREEN")
-					.setFooter("August Trading Cards")
-				]});
-				
-				collections_module.add_drawtrading(mongo, mdb_db, mdb_user_collections, message.author.id, c);
-				collections_module.set_cooldown(message.author.id, recently_drawn, 600000);
-			}
-			else {
-				message.react("⏳");
+
+		case "quote":
+			mongo.connect(process.env.DB_CONNECTION_STRING, {useUnifiedTopology: true}, async function(err, client) {
+				if (err) throw err;
+				let db = client.db(mdb_db);
+				let all_quotes = await db.collection(mdb_user_quotes).find().toArray();
+				client.close();
+				// Select a random quote
+				let rquote = all_quotes[Math.floor(Math.random()*all_quotes.length)];
+				let quotee_display_name = await user_module.get_username(discord_client, interaction.guild, rquote["quotee"]);
+				await interaction.reply({content: `*\"${rquote["quote_text"]}\"* \t- ${quotee_display_name}`});
+			});
+			break;
+
+
+		case "addquote":
+			let new_quote = interaction.options.getString("quote");
+			if (quotes_module.add_quote(mongo, mdb_db, mdb_user_quotes, 
+				interaction.options.getMentionable("person").user.id, 
+				new_quote, 
+				interaction.user.id
+			)) {
+				interaction.reply({content: `${interaction.user} added a quote to the database.`});
 			}
 			break;
 
-		// Draw card from tavern tarot and add to sender's collection.
-		case `${prefix}drawtarot`:
-		case `${prefix}dt`:
-			if (!recently_drawn_tarot.has(message.author.id)) {
-				let cards = collections_module.pick_draw3tarot(cards_tarot, message.author.username);
-				message.channel.send({embeds: [
-					new MessageEmbed()
-					.setTitle(cards[0]["numeral"] + " : " + cards[0]["name"] + " " + cards[0]["emoji"])
-					.setDescription(cards[0]["description"])
-					.addFields(
-						{ 
-							name: cards[1]["name"] + " " + cards[1]["emoji"], 
-							value: cards[1]["reverse"] + "...", 
-							inline: true 
-						},
-						{ 
-							name: cards[2]["name"] + " " + cards[2]["emoji"], 
-							value: "..." + cards[2]["advice"], 
-							inline: true 
-						}
-					)
-					.setImage(cards[0]["imglink"])
-					.setColor("DARK_RED")
-					.setFooter("Tavern Arcana")
-				]});
-
-				collections_module.set_cooldown(message.author.id, recently_drawn_tarot, 14400000);
-			}
-			else {
-				message.react("⏳");
-			}
+		
+		case "findquote":
+			mongo.connect(process.env.DB_CONNECTION_STRING, {useUnifiedTopology: true}, async function(err, client) {
+				if (err) throw err;
+				let db = client.db(mdb_db);
+				let all_quotes = await db.collection(mdb_user_quotes).find().toArray();
+				client.close();
+				let matching_quotes = all_quotes.filter(q => (
+					q["quote_text"]
+						.toLowerCase()
+						.includes(interaction.options.getString("text"))
+				));
+				// Only send a random quote as a message if any quotes with the given substring exist.
+				if (matching_quotes.length > 0) {
+					let rquote = matching_quotes[Math.floor(Math.random()*matching_quotes.length)];
+					let quotee_display_name = await user_module.get_username(discord_client, interaction.guild, rquote["quotee"]);
+					await interaction.reply({content: `*\"${rquote["quote_text"]}\"* \t- ${quotee_display_name}`});
+				}
+				else {
+					interaction.reply({content: "😐", ephemeral: true});
+				}
+			});
 			break;
 	}
-
-});  // end of message capture
+});
 
 discord_client.login(process.env.DISCORD_KEY);

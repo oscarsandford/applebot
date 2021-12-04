@@ -24,6 +24,7 @@ Run the app in a development environment with
 ```sh
 $ npm start
 ```
+Run `node src/deploy-cmds.js` to apply the slash commands.
 
 <hr>
 

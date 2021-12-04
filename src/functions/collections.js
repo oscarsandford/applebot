@@ -1,12 +1,11 @@
 module.exports = {
-	resetmc : async function (mongo, dbname, dbcollection, target, message) {
+	resetmc : async function (mongo, dbname, dbcollection, target) {
 		mongo.connect(process.env.DB_CONNECTION_STRING, {useUnifiedTopology: true}, async function(err, client) {
 			if (err) throw err;
 			let db = client.db(dbname);
 			await db.collection(dbcollection).deleteMany({discord_id : target.id});
 			client.close();
 		});
-		message.react("👍");
 	},
 
 	describecard : function (target, cards_trading, cards_tarot) {
