@@ -15,13 +15,9 @@ const mdb_user_quotes = "user_quotes";
 const fs = require("fs");
 const cards_trading = JSON.parse(fs.readFileSync("src/resources/cards.json", "utf-8"));
 const cards_tarot = JSON.parse(fs.readFileSync("src/resources/tavernarcana.json", "utf-8"));
-const weights = [
-	1,1,1,
-	2,2,2,2,2,
-	3,3,3,3,3,3,
-	4,4,4,4,
-	5,5,
-];
+const card_weights = [0.19, 0.3, 0.4, 0.1, 0.01];
+// On initialization, quote weights is populated with uniform probabilities based on number of quotes. 
+var quote_weights;
 
 // Sets for user on cooldown for drawing from decks
 const recently_drawn = new Set();
@@ -46,6 +42,14 @@ discord_client.on("ready", () => {
 			}
 		});
 	}
+	// Populate quote_weights uniformly when program is restarted.
+	mongo.connect(process.env.DB_CONNECTION_STRING, {useUnifiedTopology: true}, async function(err, client) {
+		if (err) throw err;
+		let db = client.db(mdb_db);
+		let all_quotes = await db.collection(mdb_user_quotes).find().toArray();
+		client.close();
+		quote_weights = new Array(all_quotes.length).fill(1/all_quotes.length);
+	});
 });
 
 // DEVELOPMENT MODE for local testing.
@@ -68,7 +72,7 @@ discord_client.on("interactionCreate", async interaction => {
 				return;
 			}
 
-			let c = collections_module.pick_drawtrading(cards_trading, weights);
+			let c = collections_module.pick_drawtrading(cards_trading, card_weights);
 			c["level"] = 0;
 
 			const row = new MessageActionRow()
@@ -168,8 +172,13 @@ discord_client.on("interactionCreate", async interaction => {
 				let db = client.db(mdb_db);
 				let all_quotes = await db.collection(mdb_user_quotes).find().toArray();
 				client.close();
-				// Select a random quote
-				let rquote = all_quotes[Math.floor(Math.random()*all_quotes.length)];
+				
+				// Select a quote based on the weightings. Reduce its probability, normalize.
+				let ind = collections_module.random_index_weighted(quote_weights);
+				quote_weights[ind] *= 0.5;
+				collections_module.normalize_weights(quote_weights);
+
+				let rquote = all_quotes[ind];
 				let quotee_display_name = await user_module.get_username(discord_client, interaction.guild, rquote["quotee"]);
 				await interaction.reply({content: `*\"${rquote["quote_text"]}\"* \t- ${quotee_display_name}`});
 			});
@@ -185,6 +194,10 @@ discord_client.on("interactionCreate", async interaction => {
 			)) {
 				interaction.reply({content: `${interaction.user} added a quote to the database.`});
 			}
+			// Update weightings.
+			let avg_weight = quote_weights.reduce((x, y) => x + y) / quote_weights.length;
+			quote_weights.push(avg_weight);
+			collections_module.normalize_weights(quote_weights);
 			break;
 
 		

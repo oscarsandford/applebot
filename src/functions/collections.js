@@ -8,14 +8,6 @@ module.exports = {
 		});
 	},
 
-	describecard : function (target, cards_trading, cards_tarot) {
-		let tarot_result = cards_tarot.find((c) => c["name"].toLowerCase() == target);
-		let trading_result = cards_trading.find((c) => c["name"].toLowerCase() == target);
-		if (tarot_result) return tarot_result;
-		else if (trading_result) return trading_result;
-		else return {"deck":"none"};
-	},
-
 	sort_mycollection : function (items, attr) {
 		// Select sort displayed cards in desc order
 		let i, j;
@@ -29,10 +21,10 @@ module.exports = {
 	},
 
 	pick_drawtrading : function (cards, weights) {
-		// Pick a random ranking
-		let rand_rank = weights[Math.floor(Math.random()*weights.length)];
-		// Get a random card with rank LEQ the random rank
-		let selected_cards = cards.filter((c) => c["rank"] <= rand_rank);
+		// Pick a random ranking based on weights (+1 because this returns an index).
+		let rand_rank = this.random_index_weighted(weights) + 1;
+		// Get a random card with this rank.
+		let selected_cards = cards.filter((c) => c["rank"] === rand_rank);
 		return selected_cards[Math.floor(Math.random() * selected_cards.length)];
 	},
 
@@ -77,6 +69,28 @@ module.exports = {
 			selected_cards[0]["description"] = "I, "+target+", have a dream!";
 		}
 		return selected_cards;
+	},
+
+	// Normalize probabilities to add to 1.0.
+	normalize_weights : function (weights) {
+		let weights_total = weights.reduce((x, y) => x + y);
+		for (let i = 0; i < weights.length; i++) {
+			weights[i] /= weights_total;
+		}
+	},
+
+	// Random index based on given weights.
+	// Based on this Python implementation: https://stackoverflow.com/a/10803136.
+	random_index_weighted : function (weights) {
+		let r = Math.random();
+		let cumul_sum = new Array(weights.length);
+		for (let i = 1; i < cumul_sum.length; i++) {
+			cumul_sum[i] = weights.slice(0, i).reduce((x, y) => x + y);
+		}
+		for (let i = 0; i < cumul_sum.length; i++) {
+			if (cumul_sum[i] > r) return i;
+		}
+		return 0;
 	},
 
 	// User cannot draw from this deck again for some time

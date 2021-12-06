@@ -52,7 +52,7 @@ const commands = [
 				'required' : true
 			},
 		]
-	},
+	}
 	// {
 	// 	'name' : 'quotethat',
 	// 	'description' : 'Quote the last thing said.',
