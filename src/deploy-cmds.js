@@ -17,7 +17,15 @@ const commands = [
 	},
 	{
 		'name' : 'resetcollection',
-		'description' : 'Reset your card collection. No undo!'
+		'description' : 'Reset your card collection. No undo!',
+		'options' : [
+			{
+				'name' : 'user',
+				'description' : '[ADMIN] The user whose collection to reset.',
+				'type' : 9,
+				'required' : false
+			},
+		]
 	},
 	{
 		'name' : 'quote',
@@ -25,11 +33,11 @@ const commands = [
 	},
 	{
 		'name' : 'addquote',
-		'description' : 'Write a person\'s quote to the database.',
+		'description' : 'Write a user\'s quote to the database.',
 		'options' : [
 			{
-				'name' : 'person',
-				'description' : 'The person who said the thing.',
+				'name' : 'user',
+				'description' : 'The user who said the thing.',
 				'type' : 9,
 				'required' : true
 			},
@@ -49,6 +57,30 @@ const commands = [
 				'name' : 'text',
 				'description' : 'A substring of the quote.',
 				'type' : 3,
+				'required' : true
+			},
+		]
+	},
+	{
+		'name' : 'unquote',
+		'description' : '[ADMIN] Remove any quote matching the given text.',
+		'options' : [
+			{
+				'name' : 'text',
+				'description' : 'A substring of the quote.',
+				'type' : 3,
+				'required' : true
+			},
+		]
+	},
+	{
+		'name' : 'resetcd',
+		'description' : '[ADMIN] Reset a user\'s draw cooldowns.',
+		'options' : [
+			{
+				'name' : 'user',
+				'description' : 'User to reset cooldowns for.',
+				'type' : 9,
 				'required' : true
 			},
 		]

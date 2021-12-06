@@ -30,6 +30,7 @@ Run `node src/deploy-cmds.js` to apply the slash commands.
 
 ## Commands
 *(run these in the chat box of your Discord server when the bot is installed and online)*
+**This is pretty outdated and will be updated when all commands are reimplemented.**
 
 ```js
 hi apple        		// Returns a response greeting based on the time of day

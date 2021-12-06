@@ -20,10 +20,9 @@ module.exports = {
 		}
 	},
 
-	resetcd : function (member, cooldown_sets, message) {
+	resetcd : function (uid, cooldown_sets) {
 		for (const set of cooldown_sets) {
-			set.delete(member.user.id);
+			set.delete(uid);
 		}
-		message.react("⌛");
 	}
 }

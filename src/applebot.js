@@ -1,5 +1,5 @@
 // Discord
-const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton } = require("discord.js");
+const { Client, Intents, Permissions, MessageEmbed, MessageActionRow, MessageButton } = require("discord.js");
 const discord_client = new Client({intents : [
 	Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_BANS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, 
 	Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.GUILD_MESSAGE_REACTIONS
@@ -68,7 +68,7 @@ discord_client.on("interactionCreate", async interaction => {
 	switch (interaction.commandName) {
 		case "drawaugust":
 			if (recently_drawn.has(interaction.user.id)) {
-				await interaction.reply({content: "⏳", ephemeral: true});
+				await interaction.reply({content: "Draw on cooldown.", ephemeral: true});
 				return;
 			}
 
@@ -106,7 +106,7 @@ discord_client.on("interactionCreate", async interaction => {
 		
 		case "drawtarot":
 			if (recently_drawn_tarot.has(interaction.user.id)) {
-				await interaction.reply({content: "⏳", ephemeral: true});
+				await interaction.reply({content: "Tarot draw on cooldown.", ephemeral: true});
 				return;
 			}
 			let cards = collections_module.pick_draw3tarot(cards_tarot, interaction.user.username);
@@ -159,10 +159,18 @@ discord_client.on("interactionCreate", async interaction => {
 
 		
 		case "resetcollection":
-			// TODO: have it so there's a role-restricted option 
-			// for admins to reset another users's collection.
-			collections_module.resetmc(mongo, mdb_db, mdb_user_collections, interaction.user);
-			await interaction.reply({content: "It is done.", ephemeral: true})
+			// Server managers can use the option to reset a mentioned user's collection.
+			if (
+				interaction.options.getMentionable("user") && 
+				(await interaction.guild.members.fetch(interaction.user)).permissions.has(Permissions.FLAGS.MANAGE_GUILD)
+			) {
+				collections_module.resetmc(mongo, mdb_db, mdb_user_collections, interaction.options.getMentionable("user"));
+				await interaction.reply({content: "User collection was successfully reset.", ephemeral: true});
+			}
+			else {
+				collections_module.resetmc(mongo, mdb_db, mdb_user_collections, interaction.user);
+				await interaction.reply({content: "It is done.", ephemeral: true});
+			}
 			break;
 
 
@@ -188,7 +196,7 @@ discord_client.on("interactionCreate", async interaction => {
 		case "addquote":
 			let new_quote = interaction.options.getString("quote");
 			if (quotes_module.add_quote(mongo, mdb_db, mdb_user_quotes, 
-				interaction.options.getMentionable("person").user.id, 
+				interaction.options.getMentionable("user").user.id, 
 				new_quote, 
 				interaction.user.id
 			)) {
@@ -219,9 +227,35 @@ discord_client.on("interactionCreate", async interaction => {
 					await interaction.reply({content: `*\"${rquote["quote_text"]}\"* \t- ${quotee_display_name}`});
 				}
 				else {
-					interaction.reply({content: "😐", ephemeral: true});
+					await interaction.reply({content: "No matching quote found.", ephemeral: true});
 				}
 			});
+			break;
+
+
+		case "unquote":
+			// Admin-restricted command.
+			if (!(await interaction.guild.members.fetch(interaction.user)).permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
+				return;
+			}
+			if (quotes_module.remove_quotes(
+				mongo, mdb_db, mdb_user_quotes, interaction.options.getString("text").toLowerCase()
+			)) {
+				await interaction.reply({content: "It is done.", ephemeral: true});
+			}
+			else {
+				await interaction.reply({content: "No matching quote found.", ephemeral: true});
+			}
+			break;
+
+
+		case "resetcd":
+			// Admin-restricted command.
+			if (!(await interaction.guild.members.fetch(interaction.user)).permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
+				return;
+			}
+			admin_module.resetcd(interaction.options.getMentionable("user").user.id, [recently_drawn, recently_drawn_tarot]);
+			await interaction.reply({content: "Draw cooldowns reset.", ephemeral: true});
 			break;
 	}
 });
