@@ -218,7 +218,7 @@ discord_client.on("interactionCreate", async interaction => {
 				let matching_quotes = all_quotes.filter(q => (
 					q["quote_text"]
 						.toLowerCase()
-						.includes(interaction.options.getString("text"))
+						.includes(interaction.options.getString("text").toLowerCase())
 				));
 				// Only send a random quote as a message if any quotes with the given substring exist.
 				if (matching_quotes.length > 0) {
