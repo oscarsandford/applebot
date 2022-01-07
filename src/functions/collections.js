@@ -1,3 +1,5 @@
+const { MessageEmbed } = require("discord.js");
+
 module.exports = {
 	resetmc : async function (mongo, dbname, dbcollection, target) {
 		mongo.connect(process.env.DB_CONNECTION_STRING, {useUnifiedTopology: true}, async function(err, client) {
@@ -99,5 +101,20 @@ module.exports = {
 		setTimeout(() => {
 			cooldown_set.delete(target);
 		}, timeout);
+	},
+
+	// Returns an embed for a card collection page.
+	generate_page_embed : async function (data, start) {
+		const page = new MessageEmbed()
+			.setTitle("Card Collection")
+			.setColor("DARK_GOLD");
+		
+		for (let i = start; i < start+9 && i < data.length; i++) {
+			let n = data[i]["card"]["name"] +" +"+ data[i]["card"]["level"];
+			let v = ":star:".repeat(data[i]["card"]["rank"]);
+			page.addField(n, v, true);
+		}
+		page.setDescription(data.length+" entries total.");
+		return page;
 	}
 }

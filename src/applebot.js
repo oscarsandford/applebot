@@ -92,8 +92,7 @@ discord_client.on("interactionCreate", async interaction => {
 			
 			await interaction.reply({embeds : [card], components : [row]});
 			
-			const filter = i => i.customId === 'primary';
-			const collector = interaction.channel.createMessageComponentCollector({ filter, time: 10000 });
+			const collector = interaction.channel.createMessageComponentCollector({time: 10000});
 			collector.on('collect', async i => {
 				if (i.customId === 'primary') {
 					collections_module.add_drawtrading(mongo, mdb_db, mdb_user_collections, i.user.id, c);
@@ -140,20 +139,50 @@ discord_client.on("interactionCreate", async interaction => {
 				let db = client.db(mdb_db);
 				let items = await db.collection(mdb_user_collections).find({discord_id : interaction.user.id}).toArray();
 				client.close();
-			
-				const collection_embed = new MessageEmbed()
-					.setTitle(interaction.user.username + "'s Collection")
-					.setColor("DARK_GOLD");
-				
-				// Display the top leveled (maximum 9) entries.
 				collections_module.sort_mycollection(items, "level");
-				for (let i = 0; i < 9 && i < items.length; i++) {
-					let n = items[i]["card"]["name"] +" +"+ items[i]["card"]["level"];
-					let v = ":star:".repeat(items[i]["card"]["rank"]);
-					collection_embed.addField(n, v, true);
-				}
-				collection_embed.setDescription(items.length+" entries total.");
-				await interaction.reply({embeds:[collection_embed]});
+				await interaction.reply({
+					embeds: [await collections_module.generate_page_embed(items, 0)], 
+					components: items.length < 10 ? [] : [
+						new MessageActionRow({components: [
+						new MessageButton({
+							style: "SECONDARY",
+							label: "Next",
+							emoji: "➡️",
+							customId: "next"
+						})
+					]})]
+				});
+				// No button necessary if collection is too small.
+				if (items.length < 10) return;
+				// Collector responds to page prev/next clicks within the next minute or so.
+				const collector = interaction.channel.createMessageComponentCollector({time: 100000});
+				let current_page = 0;
+				collector.on("collect", async i => {
+					if (i.customId === "prev" || i.customId === "next") {
+						i.customId === "prev" ? (current_page -= 9) : (current_page += 9);
+						await i.update({
+							embeds: [await collections_module.generate_page_embed(items, current_page)],
+							components: [
+								new MessageActionRow({
+									components: [
+										...(current_page ? [new MessageButton({
+											style: "SECONDARY",
+											label: "Prev",
+											emoji: "⬅️",
+											customId: "prev"
+										})] : []),
+										...(current_page + 9 < items.length ? [new MessageButton({
+											style: "SECONDARY",
+											label: "Next",
+											emoji: "➡️",
+											customId: "next"
+										})] : [])
+									]
+								})
+							]
+						});
+					}
+				});
 			});
 			break;
 
@@ -195,12 +224,13 @@ discord_client.on("interactionCreate", async interaction => {
 
 		case "addquote":
 			let new_quote = interaction.options.getString("quote");
+			let quotee = interaction.options.getMentionable("user").user;
 			if (quotes_module.add_quote(mongo, mdb_db, mdb_user_quotes, 
-				interaction.options.getMentionable("user").user.id, 
+				quotee.id, 
 				new_quote, 
 				interaction.user.id
 			)) {
-				interaction.reply({content: `${interaction.user} added a quote to the database.`});
+				interaction.reply({content: `${interaction.user} added a quote from ${quotee} to the database.`});
 			}
 			// Update weightings.
 			let avg_weight = quote_weights.reduce((x, y) => x + y) / quote_weights.length;
